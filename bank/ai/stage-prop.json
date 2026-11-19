@@ -1,0 +1,118 @@
+[
+  {
+    "area": "stage-prop",
+    "type": "numeric",
+    "title": "LOX Head Under Acceleration",
+    "topic": "Feed system hydrostatics",
+    "difficulty": "easy",
+    "prompt": "During ascent a stage accelerates at 3 g axial. The liquid oxygen column above the engine inlet is 20 m tall, and LOX density is 1141 kg/m³. Taking g = 9.81 m/s², what hydrostatic pressure does the column add at the engine inlet, in bar?",
+    "answer": 6.72,
+    "tolerancePct": 2,
+    "unit": "bar",
+    "explanation": "ΔP = ρ·a·h = 1141 kg/m³ × (3 × 9.81 m/s²) × 20 m = 671,593 Pa ≈ 6.72 bar.\nThis head adds to ullage pressure at the pump inlet, which is why inlet pressure, and so NPSP margin, is lowest early in flight (low acceleration) and why tank pressure schedules are often highest at liftoff.",
+    "tags": ["hydrostatics", "feed system", "hand calc"],
+    "origin": "ai"
+  },
+  {
+    "area": "stage-prop",
+    "type": "numeric",
+    "title": "Joukowsky Surge Pressure",
+    "topic": "Water hammer",
+    "difficulty": "medium",
+    "prompt": "A main oxidizer valve slams shut faster than the line's acoustic round-trip time. The LOX is flowing at 5 m/s, LOX density is 1141 kg/m³, and the effective speed of sound in the line (including wall compliance) is 900 m/s. What is the resulting surge pressure rise, in MPa?",
+    "answer": 5.13,
+    "tolerancePct": 2,
+    "unit": "MPa",
+    "explanation": "Joukowsky equation for instantaneous closure: ΔP = ρ·c·Δv = 1141 × 900 × 5 = 5,134,500 Pa ≈ 5.13 MPa.\nThat's on top of the steady line pressure, so it can easily exceed proof pressure. It's the reason valve closing times, line routing and surge suppression matter.",
+    "tags": ["water hammer", "valves", "hand calc"],
+    "origin": "ai"
+  },
+  {
+    "area": "stage-prop",
+    "type": "numeric",
+    "title": "Orifice Mass Flow",
+    "topic": "Fluid flow",
+    "difficulty": "easy",
+    "prompt": "In a water-flow test, a sharp-edged orifice of 10 mm diameter with a discharge coefficient Cd = 0.70 sees a 1.0 MPa pressure drop. Water density is 1000 kg/m³. What is the mass flow rate, in kg/s?",
+    "answer": 2.46,
+    "tolerancePct": 2,
+    "unit": "kg/s",
+    "explanation": "ṁ = Cd · A · √(2ρΔP)\nA = π/4 × (0.010 m)² = 7.854×10⁻⁵ m²\n√(2 × 1000 × 1.0×10⁶) = 44,721 kg/(m²·s)\nṁ = 0.70 × 7.854×10⁻⁵ × 44,721 ≈ 2.46 kg/s.\nWater-flow tests like this are how injectors and orifices are calibrated before hot fire; ṁ scales with √ΔP, so doubling flow needs 4× the pressure drop.",
+    "tags": ["orifice", "flow", "hand calc"],
+    "origin": "ai"
+  },
+  {
+    "area": "stage-prop",
+    "type": "mcq",
+    "title": "What Drives Cavitation Risk",
+    "topic": "Pump inlet conditions",
+    "difficulty": "easy",
+    "prompt": "Which change increases the risk of cavitation at a turbopump inlet, all else equal?",
+    "choices": [
+      "Raising tank ullage pressure",
+      "Higher vehicle axial acceleration",
+      "Warmer propellant at the pump inlet",
+      "Subcooling (densifying) the propellant"
+    ],
+    "answerIndex": 2,
+    "explanation": "Net positive suction pressure is NPSP = P_inlet − P_vapor. Warmer propellant has a higher vapor pressure, so margin drops. Higher ullage pressure and higher acceleration (more hydrostatic head) both raise inlet pressure, and subcooling lowers vapor pressure. Common causes of inlet warming are heat leak, insufficient chill-down and recirculation, and stratification near the outlet.",
+    "tags": ["cavitation", "npsp", "turbopump"],
+    "origin": "ai"
+  },
+  {
+    "area": "stage-prop",
+    "type": "mcq",
+    "title": "Taming Water Hammer",
+    "topic": "Water hammer",
+    "difficulty": "medium",
+    "prompt": "A long feedline has length L and acoustic speed c. Which single change most directly reduces the peak surge pressure when its downstream valve closes?",
+    "choices": [
+      "Make the valve close slower than 2L/c",
+      "Increase line wall thickness to make it stiffer",
+      "Increase the steady-state flow velocity",
+      "Move the valve farther from the tank"
+    ],
+    "answerIndex": 0,
+    "explanation": "If the valve closes in less than one acoustic round trip (2L/c), the full Joukowsky spike ρ·c·Δv develops. Closing slower lets the reflected expansion wave arrive and partly cancel the pressure rise, reducing the peak roughly in proportion to (2L/c)/t_close. A stiffer line actually raises the effective wave speed c, so it increases the spike. Higher velocity increases Δv. Moving the valve farther from the tank lengthens L and the reflection time, which makes it worse.",
+    "tags": ["water hammer", "valves"],
+    "origin": "ai"
+  },
+  {
+    "area": "stage-prop",
+    "type": "mcq",
+    "title": "Autogenous Pressurization",
+    "topic": "Pressurization",
+    "difficulty": "medium",
+    "prompt": "What is the main advantage of autogenous pressurization (using vaporized propellant, e.g. gaseous methane and oxygen tapped from the engine) over a stored-helium system?",
+    "choices": [
+      "It removes helium bottles (COPVs), their mass and cost, and the need to supply helium",
+      "It lets the tank run at lower pressure because the gas is warmer",
+      "It eliminates the risk of ullage collapse when propellant sloshes",
+      "It needs no heat exchanger or engine interface"
+    ],
+    "answerIndex": 0,
+    "explanation": "Autogenous pressurization uses gasified propellant from the engine (through heat exchangers or a tap-off), so you drop the high-pressure helium system: COPVs, regulators, the helium itself (expensive and supply-limited), and a failure mode class. The tradeoffs: warm pressurant can condense in a cryogenic tank, especially when slosh mixes cold liquid into the ullage, causing ullage collapse; pressurant mass is higher because the gas is heavier than helium; and you need an engine interface and heat exchanger.",
+    "tags": ["pressurization", "autogenous", "copv"],
+    "origin": "ai"
+  },
+  {
+    "area": "stage-prop",
+    "type": "open",
+    "title": "Explain Pogo",
+    "topic": "Pogo",
+    "difficulty": "hard",
+    "prompt": "What is pogo oscillation on a liquid rocket stage, why does it happen, and how would you fix it?",
+    "rubric": [
+      "Defines pogo as a self-excited longitudinal oscillation coupling vehicle structure and the propulsion system",
+      "Explains the feedback loop: structural vibration → feedline/pump inlet pressure oscillation → flow and thrust oscillation → drives structure",
+      "Notes it occurs when feed-system and structural mode frequencies come close, often changing through flight as tanks drain",
+      "Primary fix: a gas-charged accumulator (pogo suppressor) near the pump inlet, which adds compliance and lowers feedline frequency to detune",
+      "Mentions analysis and test: stability analysis with structural modes and feed-system models, flight data from accelerometers and pressure transducers",
+      "Mentions consequences: high g loads on crew/payload, can lead to engine shutdown or structural failure"
+    ],
+    "modelAnswer": "Pogo is a self-excited longitudinal vibration where the vehicle structure and the propulsion system feed each other. The stage vibrates along its axis, which pumps the propellant column and oscillates pressure at the pump inlet. That modulates flow into the engine, so thrust oscillates, and if that thrust oscillation is in phase with the structural motion, it adds energy and the loop grows. It shows up when a feed-system resonance, set by line length and compliance, gets close to a structural longitudinal mode. Those modes shift as tanks drain, so pogo often appears at a particular point in flight. The classic fix is a pogo suppressor: a gas-charged accumulator near the pump inlet that adds compliance, drops the feedline natural frequency well below the structural mode, and damps the loop. You size it with a coupled stability analysis using the structural modes and a feed-system model, then confirm with flight data from accelerometers and inlet pressure transducers. It matters because it can put large g loads on crew and payload and in the worst case shut down engines or damage structure.",
+    "explanation": "Pogo was a significant problem on Titan II/Gemini and Saturn V (Apollo 13's center engine shut down from it). The fix pattern of detuning with accumulators and verifying with coupled analysis is what interviewers want to hear.",
+    "tags": ["pogo", "dynamics", "feed system"],
+    "origin": "ai"
+  }
+]
