@@ -1,5 +1,5 @@
 import { AREAS, type AreaId, type Settings } from "../../shared/schema.ts";
-import { buildSession, dayKey, isDue, isMastered, liveStreak } from "../../shared/srs.ts";
+import { buildSession, dayKey, isDone, liveStreak } from "../../shared/session.ts";
 import { api } from "../api.ts";
 import { navigate, useStore } from "../App.tsx";
 
@@ -8,8 +8,7 @@ export function HomePage() {
   const s = progress.settings;
   const today = progress.daily[dayKey()] ?? 0;
   const goalPct = Math.min(100, Math.round((today / s.dailyGoalXp) * 100));
-  const due = pool.filter((q) => isDue(progress, q.id)).length;
-  const fresh = pool.filter((q) => !progress.questions[q.id]).length;
+  const fresh = pool.filter((q) => !isDone(progress, q.id)).length;
   const next = buildSession(pool, progress, s.sessionLength).length;
   const streak = liveStreak(progress);
 
@@ -37,7 +36,7 @@ export function HomePage() {
         <div className="hero-left">
           <h1>{greeting(today, s.dailyGoalXp)}</h1>
           <p className="muted">
-            {due > 0 ? `${due} review${due === 1 ? "" : "s"} due` : "No reviews due"} · {fresh} new in your focus areas
+            {fresh} new in your focus areas · {pool.length - fresh} done
           </p>
           <button className="btn primary big" disabled={next === 0} onClick={() => navigate("/practice")}>
             {next === 0 ? "Nothing to practice — add or generate questions" : `Start session · ${next} questions`}
@@ -73,15 +72,7 @@ export function HomePage() {
       <div className="areas">
         {AREAS.map((a) => {
           const qs = bank.filter((q) => q.area === a.id && (!s.verifiedOnly || q.verified));
-          const mastered = qs.filter((q) => isMastered(progress, q.id)).length;
-          const attempted = qs.filter((q) => progress.questions[q.id]);
-          const acc = attempted.length
-            ? Math.round(
-                (attempted.reduce((n, q) => n + progress.questions[q.id].correct, 0) /
-                  attempted.reduce((n, q) => n + progress.questions[q.id].attempts, 0)) *
-                  100,
-              )
-            : null;
+          const done = qs.filter((q) => isDone(progress, q.id)).length;
           const on = s.focusAreas.includes(a.id);
           return (
             <button key={a.id} className={`area-card area-${a.id} ${on ? "on" : ""}`} onClick={() => toggleArea(a.id)}>
@@ -91,10 +82,10 @@ export function HomePage() {
               </div>
               <div className="area-name">{a.label}</div>
               <div className="meter">
-                <div style={{ width: `${qs.length ? (mastered / qs.length) * 100 : 0}%` }} />
+                <div style={{ width: `${qs.length ? (done / qs.length) * 100 : 0}%` }} />
               </div>
               <div className="muted small">
-                {mastered}/{qs.length} mastered{acc !== null ? ` · ${acc}% accuracy` : ""}
+                {done}/{qs.length} done
               </div>
             </button>
           );

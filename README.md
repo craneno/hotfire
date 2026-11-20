@@ -1,100 +1,46 @@
 # hotfire 🔥
 
-Interview drills for mechanical engineers going after SpaceX-style hardware roles. It mixes Duolingo-style daily sessions (streaks, XP, spaced repetition) with a LeetCode-style problem list.
+Interview drills for mechanical engineers going after SpaceX-style hardware roles. It mixes Duolingo-style daily sessions (streaks, XP, daily goal) with a LeetCode-style problem list.
 
 Focus areas: **Manufacturing / Build**, **Stage Propulsion**, **Combustion Devices**, **Battery Pack**.
 
-Question types:
-
-- **Hand calc**: numeric answer with a unit and a ± tolerance
-- **Multiple choice**
-- **Interview answer**: open-ended. You type the answer you'd give out loud, then either the AI model grades it against a rubric (score, what you hit and missed, and the follow-up an interviewer would ask) or you self-grade against the model answer.
+Nothing is graded. You write your answer, click **Done**, and see your answer next to the solution. The app runs fully offline with no API calls. AI is used only to write questions and solutions into the bank ahead of time.
 
 ## Run it
 
 ```bash
 npm install
-cp .env.example .env    # add GEMINI_API_KEY to turn on the AI features
-npm run dev             # API on :8787, app on http://localhost:5173
+npm run dev     # API on :8787, app on http://localhost:5173
 ```
 
-Everything except generation, import and AI grading works without an API key.
+`npm run start` builds the app and serves everything from :8787 as a single process.
 
 ## The question bank
 
 ```
 bank/
   verified/   your questions, plus AI questions you've approved   ← source of truth
-  ai/         AI-generated questions waiting for review
+  ai/         AI-written questions waiting for review
 data/
-  progress.json   XP, streak, per-question spaced-repetition state (gitignored)
+  progress.json   XP, streak, completion and your past answers (gitignored)
 ```
 
-Each file is a JSON array. File names don't matter (`<area>.json` is the convention), so organize however you like. The server re-reads files on every request, so edits show up on refresh. Run `npm run bank:check` to validate everything.
+Each file is a JSON array; see `CLAUDE.md` for the format. The server re-reads the files on every request, so edits show up on refresh. Run `npm run bank:check` to validate everything and list questions that are still missing a solution.
 
-### Adding your questions
+**Adding your questions:** use the **Add** page, or edit `bank/verified/*.json` directly. You can leave the solution blank.
 
-There are three ways to add questions, all of which land in `bank/verified/`:
+**AI questions and solutions:** open a Claude Code session on this repo and ask, e.g. "generate 5 hard stage-prop questions on pressurization" or "fill in the missing solutions". `CLAUDE.md` tells it the format, to keep solutions concise, and to compute every hand calc rather than guess. Generated questions land in `bank/ai/` marked **AI · unreviewed**, and you verify or reject them in **Review** or right after answering one. Turn on **Verified questions only** on Home to practice only your bank.
 
-1. **Add → Write one**: a form for a single question.
-2. **Add → Import from notes**: paste questions in any format (doc, list, interview notes). the AI model structures them, keeps your wording, fills in missing answers, rubrics and explanations, and flags what it inferred. You review each draft before it's saved.
-3. **Edit the JSON** directly:
-
-```jsonc
-// common fields
-{
-  "area": "combustion-devices",        // manufacturing | stage-prop | combustion-devices | battery-pack
-  "type": "numeric",                   // numeric | mcq | open
-  "title": "Size the Throat",
-  "topic": "Thrust chamber sizing",
-  "difficulty": "medium",              // easy | medium | hard
-  "prompt": "…",
-  "explanation": "…",                  // shown after answering
-  "tags": ["sizing"],                  // optional
-  "origin": "human"                    // optional, default human
-  // "id" is optional; it's derived from area + prompt if you leave it out
-}
-
-// numeric
-{ "answer": 262.2, "unit": "mm", "tolerancePct": 2 }
-
-// mcq
-{ "choices": ["…", "…", "…", "…"], "answerIndex": 2 }
-
-// open
-{ "rubric": ["point a strong answer hits", "…"], "modelAnswer": "…" }
-```
-
-### AI questions
-
-**Generate** asks the AI model for new questions in an area. You can set a topic, difficulty, types and count. Your verified questions in that area are sent as style and difficulty examples, and existing titles are sent so it avoids duplicates. The more of your own questions you add, the better calibrated the output gets.
-
-Generated questions go to `bank/ai/` and are playable right away, marked **AI · unreviewed**. You can verify or reject them from **Review**, or straight from the answer screen while you practice. Turn on **Verified questions only** on Home to practice only your bank.
-
-The repo ships with 28 starter questions (7 per area) in `bank/ai/`. They're AI-written, so they start unreviewed.
+The repo ships with 28 starter questions (7 per area) in `bank/ai/`.
 
 ## How practice works
 
-- **Session**: due reviews first, then unseen questions, interleaved across areas and biased toward your weakest area. A question you miss comes back once at the end of the session.
-- **Spaced repetition**: Leitner boxes. A correct answer pushes the next review out by 1 → 3 → 7 → 16 → 35 days. A partial answer drops one box. A miss resets the question to box 0.
-- **XP**: 10 / 20 / 30 for easy / medium / hard, half for partial. Any day where you earn XP counts toward your streak.
-- **Mastered** means the question has reached box 3, i.e. you've answered it correctly across about a week of gaps.
+- **Session:** questions you haven't done yet come first, mixed across your focus areas and starting with the area you've done least. After that come the ones you've gone longest without seeing.
+- **Answering:** type your answer, or work it on paper and click **Done** with an empty box. The solution appears next to what you wrote, and each attempt is saved so you can compare against your previous answers next time.
+- **XP:** 10 / 20 / 30 for easy / medium / hard. Any day where you earn XP counts toward your streak.
 
-Keyboard: `1`–`4` pick a choice, `Enter` checks or continues.
+Keyboard: `Ctrl/Cmd+Enter` = Done.
 
 ## Stack
 
-Vite + React + TypeScript frontend, Express API (`server/`), shared zod schema and SRS logic (`shared/`).
-
-## AI provider
-
-The AI features run on **Google Gemini 4 Neon** by default. Switch providers in `.env`:
-
-| `AI_PROVIDER` | Key | Model var (default) |
-|---|---|---|
-| `google` (default) | `GEMINI_API_KEY` | `GEMINI_MODEL` (`gemini-4-neon`; `gemini-4-hydrogen` is lighter and cheaper) |
-| `anthropic` | `ANTHROPIC_API_KEY` | `CLAUDE_MODEL` (`claude-opus-5-5`) |
-
-Both providers return JSON against the same schema (`server/llm.ts`), and their output is validated before anything is written to the bank. Every prompt tells the model to keep explanations, model answers and feedback very concise (the `CONCISE` block in `server/ai.ts`).
-
-`npm run start` builds the app and serves everything from :8787 if you'd rather run a single process.
+Vite + React + TypeScript frontend, Express API (`server/`) that reads and writes the JSON bank, shared zod schema and session logic (`shared/`).

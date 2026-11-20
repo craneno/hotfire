@@ -1,108 +1,116 @@
 [
   {
     "area": "battery-pack",
-    "type": "numeric",
     "title": "Pack Cell Count",
     "topic": "Pack architecture",
     "difficulty": "easy",
+    "type": "calc",
     "prompt": "You are sizing a pack from cells that are 3.6 V nominal and 5.0 Ah. The pack must be at least 400 V nominal and at least 50 kWh nominal energy. Pick the minimum series count that meets the voltage, then the minimum parallel count that meets the energy. How many cells are in the pack?",
-    "answer": 2800,
-    "tolerancePct": 0,
-    "unit": "cells",
-    "explanation": "Series: 400 / 3.6 = 111.1 → 112s (round up to meet ≥ 400 V). Pack nominal = 403.2 V.\nEnergy per parallel string: 112 × 3.6 V × 5.0 Ah = 2016 Wh.\nParallel: 50,000 / 2016 = 24.8 → 25p.\nTotal = 112 × 25 = 2800 cells (≈ 50.4 kWh).\nIn practice you'd also check usable vs nominal energy, peak current per cell (C-rate), and how the series count divides into modules.",
-    "tags": ["sizing", "architecture", "hand calc"],
+    "answer": "2800 cells",
+    "solution": "Series: 400 / 3.6 = 111.1 → 112s (round up to meet ≥ 400 V). Pack nominal = 403.2 V.\nEnergy per parallel string: 112 × 3.6 V × 5.0 Ah = 2016 Wh.\nParallel: 50,000 / 2016 = 24.8 → 25p.\nTotal = 112 × 25 = 2800 cells (≈ 50.4 kWh).\nIn practice you'd also check usable vs nominal energy, peak current per cell (C-rate), and how the series count divides into modules.",
+    "keyPoints": [],
+    "tags": [
+      "sizing",
+      "architecture",
+      "hand calc"
+    ],
     "origin": "ai"
   },
   {
     "area": "battery-pack",
-    "type": "numeric",
     "title": "Pack I²R Heat",
     "topic": "Thermal management",
     "difficulty": "medium",
+    "type": "calc",
     "prompt": "A 96s10p pack delivers a steady 150 A. Each cell has a DC internal resistance of 25 mΩ. Ignoring busbar and interconnect losses and assuming current shares evenly, what is the total heat generated in the cells, in W?",
-    "answer": 5400,
-    "tolerancePct": 1,
-    "unit": "W",
-    "explanation": "Per-cell current: 150 A / 10 parallel = 15 A.\nPer-cell heat: I²R = 15² × 0.025 = 5.625 W.\nCell count: 96 × 10 = 960.\nTotal: 960 × 5.625 = 5400 W.\nEquivalently, pack resistance = 96 × 25 mΩ / 10 = 0.24 Ω, and 150² × 0.24 = 5400 W. DCIR rises sharply at low temperature and low SoC, so worst-case heat load is usually cold and near empty.",
-    "tags": ["thermal", "i2r", "hand calc"],
+    "answer": "5400 W",
+    "solution": "Per-cell current: 150 A / 10 parallel = 15 A.\nPer-cell heat: I²R = 15² × 0.025 = 5.625 W.\nCell count: 96 × 10 = 960.\nTotal: 960 × 5.625 = 5400 W.\nEquivalently, pack resistance = 96 × 25 mΩ / 10 = 0.24 Ω, and 150² × 0.24 = 5400 W. DCIR rises sharply at low temperature and low SoC, so worst-case heat load is usually cold and near empty.",
+    "keyPoints": [],
+    "tags": [
+      "thermal",
+      "i2r",
+      "hand calc"
+    ],
     "origin": "ai"
   },
   {
     "area": "battery-pack",
-    "type": "numeric",
     "title": "Isolation Resistance Limit",
     "topic": "HV safety",
     "difficulty": "easy",
+    "type": "calc",
     "prompt": "An 800 V DC pack must keep its isolation resistance (HV to chassis) above 500 Ω/V. What is the minimum allowable isolation resistance, in kΩ?",
-    "answer": 400,
-    "tolerancePct": 0,
-    "unit": "kΩ",
-    "explanation": "R_iso,min = 500 Ω/V × 800 V = 400,000 Ω = 400 kΩ.\nIsolation monitoring catches insulation breakdown, coolant leaks, or condensation that could put chassis at HV. Standards differ by application (100 Ω/V is common for DC-only circuits in automotive standards; 500 Ω/V where AC circuits are galvanically connected), so always confirm which requirement applies.",
-    "tags": ["hv safety", "isolation", "bms"],
+    "answer": "400 kΩ",
+    "solution": "R_iso,min = 500 Ω/V × 800 V = 400,000 Ω = 400 kΩ.\nIsolation monitoring catches insulation breakdown, coolant leaks, or condensation that could put chassis at HV. Standards differ by application (100 Ω/V is common for DC-only circuits in automotive standards; 500 Ω/V where AC circuits are galvanically connected), so always confirm which requirement applies.",
+    "keyPoints": [],
+    "tags": [
+      "hv safety",
+      "isolation",
+      "bms"
+    ],
     "origin": "ai"
   },
   {
     "area": "battery-pack",
-    "type": "mcq",
     "title": "When Lithium Plates",
     "topic": "Degradation",
     "difficulty": "easy",
-    "prompt": "Lithium plating on the anode of a Li-ion cell is most likely during:",
-    "choices": [
-      "Slow discharge at high temperature",
-      "Fast charging at low temperature",
-      "Storage at 50% state of charge",
-      "Deep discharge at room temperature"
+    "type": "concept",
+    "prompt": "Lithium plating on the anode of a Li-ion cell is most likely during:\n\nA) Slow discharge at high temperature\nB) Fast charging at low temperature\nC) Storage at 50% state of charge\nD) Deep discharge at room temperature",
+    "answer": "B) Fast charging at low temperature",
+    "solution": "Plating happens when lithium arrives at the graphite anode faster than it can intercalate, pushing the anode potential below 0 V vs Li/Li⁺. Low temperature slows diffusion and kinetics, and high charge current drives more lithium in, so fast charging when cold is the worst case. Plated lithium causes permanent capacity loss and can grow dendrites, which are an internal-short risk. That's why BMSs derate charge current at low temperature and packs preheat before fast charging.",
+    "keyPoints": [],
+    "tags": [
+      "lithium plating",
+      "charging",
+      "degradation"
     ],
-    "answerIndex": 1,
-    "explanation": "Plating happens when lithium arrives at the graphite anode faster than it can intercalate, pushing the anode potential below 0 V vs Li/Li⁺. Low temperature slows diffusion and kinetics, and high charge current drives more lithium in, so fast charging when cold is the worst case. Plated lithium causes permanent capacity loss and can grow dendrites, which are an internal-short risk. That's why BMSs derate charge current at low temperature and packs preheat before fast charging.",
-    "tags": ["lithium plating", "charging", "degradation"],
     "origin": "ai"
   },
   {
     "area": "battery-pack",
-    "type": "mcq",
     "title": "Why Balance Cells",
     "topic": "BMS",
     "difficulty": "easy",
-    "prompt": "Why does a series-connected pack need cell balancing?",
-    "choices": [
-      "To keep every cell at exactly the same temperature",
-      "Because pack usable capacity is limited by whichever cell first hits its upper or lower voltage limit, and cell states of charge drift apart over time",
-      "To increase the nominal voltage of the pack",
-      "Because parallel cells don't share current otherwise"
+    "type": "concept",
+    "prompt": "Why does a series-connected pack need cell balancing?\n\nA) To keep every cell at exactly the same temperature\nB) Because pack usable capacity is limited by whichever cell first hits its upper or lower voltage limit, and cell states of charge drift apart over time\nC) To increase the nominal voltage of the pack\nD) Because parallel cells don't share current otherwise",
+    "answer": "B) Because pack usable capacity is limited by whichever cell first hits its upper or lower voltage limit, and cell states of charge drift apart over time",
+    "solution": "In a series string, the same current flows through every cell, but self-discharge rates, capacity and temperature differ slightly, so SoC drifts apart. Charging must stop when the highest cell hits max voltage, and discharging when the lowest hits min voltage, so imbalance cuts usable capacity and can push weak cells into overcharge or overdischarge. Balancing (usually passive bleed resistors, sometimes active charge shuttling) brings them back together. Parallel cells self-balance through their direct connection.",
+    "keyPoints": [],
+    "tags": [
+      "bms",
+      "balancing",
+      "soc"
     ],
-    "answerIndex": 1,
-    "explanation": "In a series string, the same current flows through every cell, but self-discharge rates, capacity and temperature differ slightly, so SoC drifts apart. Charging must stop when the highest cell hits max voltage, and discharging when the lowest hits min voltage, so imbalance cuts usable capacity and can push weak cells into overcharge or overdischarge. Balancing (usually passive bleed resistors, sometimes active charge shuttling) brings them back together. Parallel cells self-balance through their direct connection.",
-    "tags": ["bms", "balancing", "soc"],
     "origin": "ai"
   },
   {
     "area": "battery-pack",
-    "type": "mcq",
     "title": "Stopping Propagation",
     "topic": "Thermal runaway",
     "difficulty": "medium",
-    "prompt": "A single cell in a module goes into thermal runaway. Which design approach does the most to keep it from propagating to neighboring cells?",
-    "choices": [
-      "A higher-capacity cooling pump",
-      "Thermal barriers between cells plus a directed vent path that carries hot ejecta away from neighbors",
-      "Tighter BMS overvoltage thresholds",
-      "Potting the whole module solid with no vent path"
+    "type": "concept",
+    "prompt": "A single cell in a module goes into thermal runaway. Which design approach does the most to keep it from propagating to neighboring cells?\n\nA) A higher-capacity cooling pump\nB) Thermal barriers between cells plus a directed vent path that carries hot ejecta away from neighbors\nC) Tighter BMS overvoltage thresholds\nD) Potting the whole module solid with no vent path",
+    "answer": "B) Thermal barriers between cells plus a directed vent path that carries hot ejecta away from neighbors",
+    "solution": "Once a cell is in runaway it releases energy fast, both conducted through the cell walls and carried by hot gas and particles. Propagation resistance comes from limiting heat transfer to neighbors (mica, aerogel or ceramic barriers, spacing, potting that insulates) and controlling where the vent ejecta go. Active cooling can't remove heat at runaway rates. BMS thresholds help prevent the initial event but do nothing once an internal short has started it. Sealing with no vent path traps hot gas and can turn a cell event into a module rupture.",
+    "keyPoints": [],
+    "tags": [
+      "thermal runaway",
+      "safety",
+      "propagation"
     ],
-    "answerIndex": 1,
-    "explanation": "Once a cell is in runaway it releases energy fast, both conducted through the cell walls and carried by hot gas and particles. Propagation resistance comes from limiting heat transfer to neighbors (mica, aerogel or ceramic barriers, spacing, potting that insulates) and controlling where the vent ejecta go. Active cooling can't remove heat at runaway rates. BMS thresholds help prevent the initial event but do nothing once an internal short has started it. Sealing with no vent path traps hot gas and can turn a cell event into a module rupture.",
-    "tags": ["thermal runaway", "safety", "propagation"],
     "origin": "ai"
   },
   {
     "area": "battery-pack",
-    "type": "open",
     "title": "Cell-to-Busbar Joint Design",
     "topic": "Interconnects",
     "difficulty": "hard",
+    "type": "interview",
     "prompt": "You're designing the electrical connection between cylindrical cells and the busbars in a high-power module. How do you choose the joining approach, and how would you qualify it?",
-    "rubric": [
+    "answer": "",
+    "solution": "I'd start with the electrical requirement: peak and continuous current per cell, the allowable joint resistance, and temperature rise. Then compare the options. Wire bonding is flexible, tolerant of cell height variation, and the bond can be sized to act as a per-cell fuse, but it has limited current capacity and is sensitive to vibration. Laser welding a tab or the busbar directly to the cell is fast and handles high current, but needs tight fit-up, careful control of heat input so you don't damage the cell can or the seal, and attention to dissimilar-metal joints like aluminum to nickel-plated steel. For a high-power pack I'd probably laser weld a thin nickel or copper tab with a necked section that works as a fuse, so one internally shorted cell opens instead of being fed by its parallel neighbors. Mechanically I'd make sure the joint isn't carrying structural load. Cells are bonded to the structure, and the tab has compliance for thermal growth and vibration. In production I'd monitor every weld in-line (laser power, back-reflection, or seam imaging), measure joint resistance on every cell, and run periodic destructive pull tests and cross-sections. For qualification: vibration and shock to the vehicle profile, thermal cycling, humidity and corrosion, then track joint resistance before and after to catch degradation, plus a fuse test showing a forced cell short clears without damaging neighbors.\n\nWhat interviewers look for: Interviewers want electrical, thermal, mechanical, and manufacturing thinking together: sizing, fusing strategy, fatigue, and a QC plan that scales to thousands of joints per pack.",
+    "keyPoints": [
       "Compares options such as wire bonding, laser welding (direct or via tabs), resistance welding, with tradeoffs",
       "Sizes for current: ampacity and joint resistance, I²R heating at peak and continuous current",
       "Considers per-cell fusing (e.g. a wire bond or necked tab as a fuse) so one shorted cell doesn't take down the parallel group",
@@ -110,9 +118,12 @@
       "Defines production QC: in-line weld monitoring, resistance measurement, pull/peel tests, cross-sections",
       "Qualification testing: vibration/shock, thermal cycling, humidity/corrosion, and checking resistance drift across tests"
     ],
-    "modelAnswer": "I'd start with the electrical requirement: peak and continuous current per cell, the allowable joint resistance, and temperature rise. Then compare the options. Wire bonding is flexible, tolerant of cell height variation, and the bond can be sized to act as a per-cell fuse, but it has limited current capacity and is sensitive to vibration. Laser welding a tab or the busbar directly to the cell is fast and handles high current, but needs tight fit-up, careful control of heat input so you don't damage the cell can or the seal, and attention to dissimilar-metal joints like aluminum to nickel-plated steel. For a high-power pack I'd probably laser weld a thin nickel or copper tab with a necked section that works as a fuse, so one internally shorted cell opens instead of being fed by its parallel neighbors. Mechanically I'd make sure the joint isn't carrying structural load. Cells are bonded to the structure, and the tab has compliance for thermal growth and vibration. In production I'd monitor every weld in-line (laser power, back-reflection, or seam imaging), measure joint resistance on every cell, and run periodic destructive pull tests and cross-sections. For qualification: vibration and shock to the vehicle profile, thermal cycling, humidity and corrosion, then track joint resistance before and after to catch degradation, plus a fuse test showing a forced cell short clears without damaging neighbors.",
-    "explanation": "Interviewers want electrical, thermal, mechanical, and manufacturing thinking together: sizing, fusing strategy, fatigue, and a QC plan that scales to thousands of joints per pack.",
-    "tags": ["busbar", "welding", "fusing", "qualification"],
+    "tags": [
+      "busbar",
+      "welding",
+      "fusing",
+      "qualification"
+    ],
     "origin": "ai"
   }
 ]

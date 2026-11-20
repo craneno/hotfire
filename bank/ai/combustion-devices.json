@@ -1,108 +1,116 @@
 [
   {
     "area": "combustion-devices",
-    "type": "numeric",
     "title": "Isp from c* and Cf",
     "topic": "Performance",
     "difficulty": "easy",
+    "type": "calc",
     "prompt": "An engine has a characteristic velocity c* = 1800 m/s and a thrust coefficient Cf = 1.85. What is its specific impulse, in seconds? Use g₀ = 9.80665 m/s².",
-    "answer": 339.6,
-    "tolerancePct": 1,
-    "unit": "s",
-    "explanation": "Effective exhaust velocity c = c*·Cf = 1800 × 1.85 = 3330 m/s.\nIsp = c / g₀ = 3330 / 9.80665 ≈ 339.6 s.\nc* measures combustion performance (propellants, mixture ratio, injector efficiency) and Cf measures nozzle performance (expansion ratio and ambient pressure). Splitting them is how you work out whether a performance shortfall comes from the chamber or the nozzle.",
-    "tags": ["isp", "c*", "cf", "hand calc"],
+    "answer": "339.6 s",
+    "solution": "Effective exhaust velocity c = c*·Cf = 1800 × 1.85 = 3330 m/s.\nIsp = c / g₀ = 3330 / 9.80665 ≈ 339.6 s.\nc* measures combustion performance (propellants, mixture ratio, injector efficiency) and Cf measures nozzle performance (expansion ratio and ambient pressure). Splitting them is how you work out whether a performance shortfall comes from the chamber or the nozzle.",
+    "keyPoints": [],
+    "tags": [
+      "isp",
+      "c*",
+      "cf",
+      "hand calc"
+    ],
     "origin": "ai"
   },
   {
     "area": "combustion-devices",
-    "type": "numeric",
     "title": "Size the Throat",
     "topic": "Thrust chamber sizing",
     "difficulty": "medium",
+    "type": "calc",
     "prompt": "A thrust chamber runs at a chamber pressure of 10 MPa with a total propellant mass flow of 300 kg/s and c* = 1800 m/s. What throat diameter is required, in mm?",
-    "answer": 262.2,
-    "tolerancePct": 2,
-    "unit": "mm",
-    "explanation": "From the definition of c*: c* = Pc·At / ṁ, so At = ṁ·c* / Pc.\nAt = 300 × 1800 / 10×10⁶ = 0.054 m²\nDt = √(4·At/π) = √(0.06875) ≈ 0.2622 m ≈ 262 mm.\nFor a fixed throat, Pc scales directly with mass flow, which is how throttling changes chamber pressure.",
-    "tags": ["throat", "sizing", "hand calc"],
+    "answer": "262.2 mm",
+    "solution": "From the definition of c*: c* = Pc·At / ṁ, so At = ṁ·c* / Pc.\nAt = 300 × 1800 / 10×10⁶ = 0.054 m²\nDt = √(4·At/π) = √(0.06875) ≈ 0.2622 m ≈ 262 mm.\nFor a fixed throat, Pc scales directly with mass flow, which is how throttling changes chamber pressure.",
+    "keyPoints": [],
+    "tags": [
+      "throat",
+      "sizing",
+      "hand calc"
+    ],
     "origin": "ai"
   },
   {
     "area": "combustion-devices",
-    "type": "numeric",
     "title": "Regen Coolant Temperature Rise",
     "topic": "Regenerative cooling",
     "difficulty": "easy",
+    "type": "calc",
     "prompt": "A regeneratively cooled chamber absorbs 30 MW of heat into its fuel coolant. The coolant flow is 80 kg/s with an average specific heat of 2000 J/(kg·K). What is the bulk coolant temperature rise, in K?",
-    "answer": 187.5,
-    "tolerancePct": 1,
-    "unit": "K",
-    "explanation": "Q = ṁ·cp·ΔT → ΔT = Q / (ṁ·cp) = 30×10⁶ / (80 × 2000) = 187.5 K.\nThe bulk rise matters, but so does the local wall-side coolant temperature: hydrocarbon fuels like RP-1 coke above a few hundred °C, and near-critical coolants can hit heat-transfer deterioration, so local wall temperature at the throat is often the real constraint.",
-    "tags": ["regen cooling", "heat transfer", "hand calc"],
+    "answer": "187.5 K",
+    "solution": "Q = ṁ·cp·ΔT → ΔT = Q / (ṁ·cp) = 30×10⁶ / (80 × 2000) = 187.5 K.\nThe bulk rise matters, but so does the local wall-side coolant temperature: hydrocarbon fuels like RP-1 coke above a few hundred °C, and near-critical coolants can hit heat-transfer deterioration, so local wall temperature at the throat is often the real constraint.",
+    "keyPoints": [],
+    "tags": [
+      "regen cooling",
+      "heat transfer",
+      "hand calc"
+    ],
     "origin": "ai"
   },
   {
     "area": "combustion-devices",
-    "type": "mcq",
     "title": "Peak Heat Flux Location",
     "topic": "Chamber heat transfer",
     "difficulty": "easy",
-    "prompt": "In a regeneratively cooled thrust chamber, where along the wall is the hot-gas-side heat flux typically highest?",
-    "choices": [
-      "At the injector face, where combustion starts",
-      "In the middle of the cylindrical chamber section",
-      "Just upstream of the nozzle throat",
-      "At the nozzle exit plane"
+    "type": "concept",
+    "prompt": "In a regeneratively cooled thrust chamber, where along the wall is the hot-gas-side heat flux typically highest?\n\nA) At the injector face, where combustion starts\nB) In the middle of the cylindrical chamber section\nC) Just upstream of the nozzle throat\nD) At the nozzle exit plane",
+    "answer": "C) Just upstream of the nozzle throat",
+    "solution": "Convective heat transfer scales roughly with mass flux to the 0.8 power (Bartz correlation: h ∝ (ρv)^0.8). Mass flux per unit area peaks at the throat, so heat flux peaks at or just upstream of it. That's why coolant channels are narrowest and coolant velocity highest there, and why the throat region often sets the cooling design.",
+    "keyPoints": [],
+    "tags": [
+      "heat flux",
+      "bartz",
+      "regen cooling"
     ],
-    "answerIndex": 2,
-    "explanation": "Convective heat transfer scales roughly with mass flux to the 0.8 power (Bartz correlation: h ∝ (ρv)^0.8). Mass flux per unit area peaks at the throat, so heat flux peaks at or just upstream of it. That's why coolant channels are narrowest and coolant velocity highest there, and why the throat region often sets the cooling design.",
-    "tags": ["heat flux", "bartz", "regen cooling"],
     "origin": "ai"
   },
   {
     "area": "combustion-devices",
-    "type": "mcq",
     "title": "Cost of Film Cooling",
     "topic": "Film cooling",
     "difficulty": "medium",
-    "prompt": "Adding fuel film cooling along the chamber wall reduces wall heat flux. What is the primary cost?",
-    "choices": [
-      "Higher chamber pressure at the same throat area",
-      "Lower performance (c* / Isp), because the film layer is fuel-rich and doesn't fully burn",
-      "Increased risk of oxidizer-rich wall attack",
-      "Larger nozzle expansion ratio required"
+    "type": "concept",
+    "prompt": "Adding fuel film cooling along the chamber wall reduces wall heat flux. What is the primary cost?\n\nA) Higher chamber pressure at the same throat area\nB) Lower performance (c* / Isp), because the film layer is fuel-rich and doesn't fully burn\nC) Increased risk of oxidizer-rich wall attack\nD) Larger nozzle expansion ratio required",
+    "answer": "B) Lower performance (c* / Isp), because the film layer is fuel-rich and doesn't fully burn",
+    "solution": "Film coolant is fuel that bypasses the core mixture ratio. The near-wall layer runs fuel-rich and doesn't fully mix and burn, so it lowers combustion efficiency and Isp, often by a percent or more. It's the classic trade: margin on wall temperature against performance. Film cooling makes the wall environment more fuel-rich, which reduces oxidizer attack, the opposite of the third option.",
+    "keyPoints": [],
+    "tags": [
+      "film cooling",
+      "performance"
     ],
-    "answerIndex": 1,
-    "explanation": "Film coolant is fuel that bypasses the core mixture ratio. The near-wall layer runs fuel-rich and doesn't fully mix and burn, so it lowers combustion efficiency and Isp, often by a percent or more. It's the classic trade: margin on wall temperature against performance. Film cooling makes the wall environment more fuel-rich, which reduces oxidizer attack, the opposite of the third option.",
-    "tags": ["film cooling", "performance"],
     "origin": "ai"
   },
   {
     "area": "combustion-devices",
-    "type": "mcq",
     "title": "Full-Flow Staged Combustion",
     "topic": "Engine cycles",
     "difficulty": "medium",
-    "prompt": "What is a key advantage of a full-flow staged combustion (FFSC) cycle compared to a single-preburner oxidizer-rich staged combustion cycle?",
-    "choices": [
-      "It needs no turbopumps because the preburners pressurize the propellant",
-      "All propellant passes through the turbines, so each turbine can run cooler for the same power, and the main injector sees gas-gas injection",
-      "It lets a single shaft drive both pumps without inter-propellant seals",
-      "It produces higher Isp because it doesn't use a nozzle extension"
+    "type": "concept",
+    "prompt": "What is a key advantage of a full-flow staged combustion (FFSC) cycle compared to a single-preburner oxidizer-rich staged combustion cycle?\n\nA) It needs no turbopumps because the preburners pressurize the propellant\nB) All propellant passes through the turbines, so each turbine can run cooler for the same power, and the main injector sees gas-gas injection\nC) It lets a single shaft drive both pumps without inter-propellant seals\nD) It produces higher Isp because it doesn't use a nozzle extension",
+    "answer": "B) All propellant passes through the turbines, so each turbine can run cooler for the same power, and the main injector sees gas-gas injection",
+    "solution": "In FFSC, a fuel-rich preburner drives the fuel pump and an oxidizer-rich preburner drives the ox pump, so the entire flow passes through turbines. More turbine mass flow means lower turbine inlet temperature for the same power, which helps life and margin. Separate shafts per propellant remove the need for inter-propellant seals (the third option has it backwards). Both propellants enter the main chamber as hot gases, which mixes and burns efficiently. The cost is complexity: two preburners and two hot-gas systems.",
+    "keyPoints": [],
+    "tags": [
+      "engine cycle",
+      "ffsc",
+      "turbomachinery"
     ],
-    "answerIndex": 1,
-    "explanation": "In FFSC, a fuel-rich preburner drives the fuel pump and an oxidizer-rich preburner drives the ox pump, so the entire flow passes through turbines. More turbine mass flow means lower turbine inlet temperature for the same power, which helps life and margin. Separate shafts per propellant remove the need for inter-propellant seals (the third option has it backwards). Both propellants enter the main chamber as hot gases, which mixes and burns efficiently. The cost is complexity: two preburners and two hot-gas systems.",
-    "tags": ["engine cycle", "ffsc", "turbomachinery"],
     "origin": "ai"
   },
   {
     "area": "combustion-devices",
-    "type": "open",
     "title": "Hot Fire Instability",
     "topic": "Combustion instability",
     "difficulty": "hard",
+    "type": "interview",
     "prompt": "On a hot-fire test, high-frequency Pc transducers show a growing oscillation near the chamber's first tangential (1T) acoustic mode, and post-test inspection finds erosion on the injector face and the outer ring of elements. What's going on, and how do you fix it?",
-    "rubric": [
+    "answer": "",
+    "solution": "This looks like high-frequency acoustic instability locked onto the first tangential mode, the one tangential instabilities usually pick, since it has the lowest frequency of the transverse modes and the most amplitude at the outer wall. The mechanism is the Rayleigh criterion: if heat release from the injector fluctuates in phase with the local pressure oscillation, it pumps energy into the acoustic mode and it grows until losses balance it. The erosion fits: during instability the oscillating gas velocity across the face and wall scrubs the boundary layer and heat transfer rises sharply, and the 1T mode has its largest amplitude at the outer ring. To fix it I'd work both sides. Add damping or move the mode: radial and hub baffles on the injector face to break up the tangential mode, or acoustic cavities around the chamber wall tuned to 1T. And change the driving: raise injector pressure drop so feed-system coupling is weaker, or change the element design, pattern or outer-row mixture ratio so the combustion response time doesn't line up with the 1T period. I'd verify with bomb or pulse tests to show the chamber damps a disturbance, not just that it ran stably once, using high-frequency Pc and accelerometers to identify the mode shape.\n\nWhat interviewers look for: F-1 development famously needed baffles and over 2000 full-scale tests, including bomb tests, to beat this. Interviewers look for the Rayleigh criterion, the difference between damping the acoustics and changing the driving response, and testing for dynamic stability rather than inferring it from one stable run.",
+    "keyPoints": [
       "Identifies high-frequency acoustic combustion instability coupled to the 1T mode",
       "Explains the Rayleigh criterion: heat release in phase with pressure oscillation pumps energy into the acoustic mode",
       "Links the erosion to sharply increased heat transfer during instability (oscillating velocity scrubs the boundary layer)",
@@ -110,9 +118,12 @@
       "Proposes injector-side fixes: increase injector pressure drop (stiffness), change element type/pattern/distribution to change the response",
       "Describes verification: bomb or pulse tests for dynamic stability, high-frequency instrumentation, analysis of mode shapes"
     ],
-    "modelAnswer": "This looks like high-frequency acoustic instability locked onto the first tangential mode, the one tangential instabilities usually pick, since it has the lowest frequency of the transverse modes and the most amplitude at the outer wall. The mechanism is the Rayleigh criterion: if heat release from the injector fluctuates in phase with the local pressure oscillation, it pumps energy into the acoustic mode and it grows until losses balance it. The erosion fits: during instability the oscillating gas velocity across the face and wall scrubs the boundary layer and heat transfer rises sharply, and the 1T mode has its largest amplitude at the outer ring. To fix it I'd work both sides. Add damping or move the mode: radial and hub baffles on the injector face to break up the tangential mode, or acoustic cavities around the chamber wall tuned to 1T. And change the driving: raise injector pressure drop so feed-system coupling is weaker, or change the element design, pattern or outer-row mixture ratio so the combustion response time doesn't line up with the 1T period. I'd verify with bomb or pulse tests to show the chamber damps a disturbance, not just that it ran stably once, using high-frequency Pc and accelerometers to identify the mode shape.",
-    "explanation": "F-1 development famously needed baffles and over 2000 full-scale tests, including bomb tests, to beat this. Interviewers look for the Rayleigh criterion, the difference between damping the acoustics and changing the driving response, and testing for dynamic stability rather than inferring it from one stable run.",
-    "tags": ["instability", "injector", "hot fire", "anomaly"],
+    "tags": [
+      "instability",
+      "injector",
+      "hot fire",
+      "anomaly"
+    ],
     "origin": "ai"
   }
 ]

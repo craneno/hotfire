@@ -4,6 +4,7 @@ import { api } from "../api.ts";
 import { useStore } from "../App.tsx";
 import { AreaBadge, DiffBadge, TYPE_LABEL } from "../components/Badges.tsx";
 import { QuestionEditor } from "../components/QuestionEditor.tsx";
+import { Solution } from "../components/Solution.tsx";
 
 export function ReviewPage() {
   const { bank } = useStore();
@@ -14,8 +15,8 @@ export function ReviewPage() {
     <div className="review">
       <h1>Review AI questions</h1>
       <p className="muted">
-        Check the answer and reasoning. Verify to move a question into your bank, edit it first if it's close, or reject it.
-        Only verified questions are used as style examples for future generation.
+        AI-written questions land in <code>bank/ai/</code>. Check each solution, then verify it into your bank, edit it
+        first, or reject it.
       </p>
       <div className="filters">
         <select value={area} onChange={(e) => setArea(e.target.value as AreaId | "all")}>
@@ -75,38 +76,8 @@ function ReviewItem({ q }: { q: Question }) {
           <h3>{q.title}</h3>
           <div className="qprompt">{q.prompt}</div>
           <div className="key">
-            {q.type === "mcq" && (
-              <ol className="choices-key">
-                {q.choices.map((c, i) => (
-                  <li key={i} className={i === q.answerIndex ? "right" : ""}>
-                    {c}
-                  </li>
-                ))}
-              </ol>
-            )}
-            {q.type === "numeric" && (
-              <p>
-                Answer: <strong>{q.answer} {q.unit}</strong> <span className="muted">(±{q.tolerancePct}%)</span>
-              </p>
-            )}
-            {q.type === "open" && (
-              <>
-                <h4>Rubric</h4>
-                <ul className="rubric">
-                  {q.rubric.map((r, i) => (
-                    <li key={i}>{r}</li>
-                  ))}
-                </ul>
-                <h4>Model answer</h4>
-                <p className="pre">{q.modelAnswer}</p>
-              </>
-            )}
-            {q.explanation && (
-              <>
-                <h4>Explanation</h4>
-                <p className="pre">{q.explanation}</p>
-              </>
-            )}
+            <h4>Solution</h4>
+            <Solution q={q} />
           </div>
           {error && <div className="banner err">{error}</div>}
           <div className="actions">

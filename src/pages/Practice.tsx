@@ -1,42 +1,32 @@
 import { useState } from "react";
-import type { Question, QuestionProgress } from "../../shared/schema.ts";
-import { buildSession } from "../../shared/srs.ts";
+import type { Question } from "../../shared/schema.ts";
+import { buildSession } from "../../shared/session.ts";
 import { navigate, useStore } from "../App.tsx";
 import { QuestionCard } from "../components/QuestionCard.tsx";
 
-type Done = { q: Question; result: QuestionProgress["lastResult"]; xp: number };
-
 export function PracticePage() {
   const { pool, progress } = useStore();
-  const [queue, setQueue] = useState<Question[]>(() => buildSession(pool, progress, progress.settings.sessionLength));
+  const newSession = () => buildSession(pool, progress, progress.settings.sessionLength);
+  const [queue, setQueue] = useState<Question[]>(newSession);
   const [i, setI] = useState(0);
-  const [done, setDone] = useState<Done[]>([]);
-  const [requeued, setRequeued] = useState<Set<string>>(new Set());
+  const [xp, setXp] = useState(0);
   const [round, setRound] = useState(0);
-  const [baseLen, setBaseLen] = useState(queue.length);
 
   if (queue.length === 0)
     return (
       <div className="empty">
         <h2>Nothing to practice</h2>
-        <p className="muted">Your focus areas have no questions yet. Add your own or generate some.</p>
+        <p className="muted">Your focus areas have no questions yet.</p>
         <div className="actions center">
           <a className="btn primary" href="#/add">Add questions</a>
-          <a className="btn" href="#/generate">Generate with AI</a>
         </div>
       </div>
     );
 
-  if (i >= queue.length) {
-    // Summary counts first attempts only, so a requeued miss doesn't count twice.
-    const first = new Map<string, Done>();
-    for (const d of done) if (!first.has(d.q.id)) first.set(d.q.id, d);
-    const firsts = [...first.values()];
-    const xp = done.reduce((n, d) => n + d.xp, 0);
-    const correct = firsts.filter((d) => d.result === "correct").length;
+  if (i >= queue.length)
     return (
       <div className="summary">
-        <div className="trophy">{correct === firsts.length ? "🏆" : correct / firsts.length >= 0.6 ? "🚀" : "🔧"}</div>
+        <div className="trophy">🚀</div>
         <h1>Session complete</h1>
         <div className="summary-stats">
           <div>
@@ -44,21 +34,15 @@ export function PracticePage() {
             <span>XP</span>
           </div>
           <div>
-            <strong>
-              {correct}/{firsts.length}
-            </strong>
-            <span>first-try correct</span>
-          </div>
-          <div>
-            <strong>{Math.round((correct / firsts.length) * 100)}%</strong>
-            <span>accuracy</span>
+            <strong>{queue.length}</strong>
+            <span>questions</span>
           </div>
         </div>
         <ul className="recap">
-          {firsts.map((d) => (
-            <li key={d.q.id}>
-              <span className={`dot ${d.result}`} />
-              <a href={`#/q/${encodeURIComponent(d.q.id)}`}>{d.q.title}</a>
+          {queue.map((q) => (
+            <li key={q.id}>
+              <span className="dot correct" />
+              <a href={`#/q/${encodeURIComponent(q.id)}`}>{q.title}</a>
             </li>
           ))}
         </ul>
@@ -66,12 +50,9 @@ export function PracticePage() {
           <button
             className="btn primary"
             onClick={() => {
-              const next = buildSession(pool, progress, progress.settings.sessionLength);
-              setQueue(next);
-              setBaseLen(next.length);
+              setQueue(newSession());
               setI(0);
-              setDone([]);
-              setRequeued(new Set());
+              setXp(0);
               setRound((r) => r + 1);
             }}
           >
@@ -83,11 +64,8 @@ export function PracticePage() {
         </div>
       </div>
     );
-  }
 
   const q = queue[i];
-  const pct = (i / queue.length) * 100;
-
   return (
     <div className="practice">
       <div className="session-bar">
@@ -95,26 +73,16 @@ export function PracticePage() {
           ✕
         </button>
         <div className="track">
-          <div style={{ width: `${pct}%` }} />
+          <div style={{ width: `${(i / queue.length) * 100}%` }} />
         </div>
         <span className="muted small">
           {i + 1}/{queue.length}
         </span>
       </div>
-      {i >= baseLen && (
-        <div className="banner info">Second look at one you missed.</div>
-      )}
       <QuestionCard
         key={`${round}-${i}-${q.id}`}
         q={q}
-        onDone={(result, xp) => {
-          setDone((d) => [...d, { q, result, xp }]);
-          // Duolingo-style: a miss comes back once at the end of the session.
-          if (result === "wrong" && !requeued.has(q.id)) {
-            setRequeued((s) => new Set(s).add(q.id));
-            setQueue((qs) => [...qs, q]);
-          }
-        }}
+        onDone={(gained) => setXp((x) => x + gained)}
         continueLabel={i + 1 >= queue.length ? "Finish" : "Continue"}
         onContinue={() => setI((n) => n + 1)}
       />

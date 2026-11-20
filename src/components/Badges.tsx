@@ -18,4 +18,4 @@ export function SourceBadge({ q }: { q: Pick<Question, "verified" | "origin"> })
   return <span className="badge unverified" title="AI-written, not yet reviewed">AI · unreviewed</span>;
 }
 
-export const TYPE_LABEL = { mcq: "Multiple choice", numeric: "Hand calc", open: "Interview answer" } as const;
+export const TYPE_LABEL = { calc: "Hand calc", concept: "Concept", interview: "Interview" } as const;

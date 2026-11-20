@@ -3,7 +3,7 @@ import { AREAS, type AreaId, type Difficulty, type QuestionType } from "../../sh
 import { navigate, useStore } from "../App.tsx";
 import { AreaBadge, DiffBadge, TYPE_LABEL } from "../components/Badges.tsx";
 
-type Status = "all" | "solved" | "attempted" | "todo";
+type Status = "all" | "done" | "todo";
 
 export function ProblemsPage() {
   const { bank, progress } = useStore();
@@ -14,11 +14,7 @@ export function ProblemsPage() {
   const [source, setSource] = useState<"all" | "verified" | "ai">("all");
   const [search, setSearch] = useState("");
 
-  const statusOf = (id: string) => {
-    const p = progress.questions[id];
-    if (!p) return "todo";
-    return p.correct > 0 ? "solved" : "attempted";
-  };
+  const statusOf = (id: string) => (progress.questions[id]?.attempts ? "done" : "todo");
 
   const rows = useMemo(() => {
     const s = search.trim().toLowerCase();
@@ -42,7 +38,7 @@ export function ProblemsPage() {
 
   const counts = (["easy", "medium", "hard"] as const).map((d) => {
     const all = bank.filter((q) => q.difficulty === d && (area === "all" || q.area === area));
-    return { d, total: all.length, solved: all.filter((q) => statusOf(q.id) === "solved").length };
+    return { d, total: all.length, solved: all.filter((q) => statusOf(q.id) === "done").length };
   });
 
   return (
@@ -84,8 +80,7 @@ export function ProblemsPage() {
         <select value={status} onChange={(e) => setStatus(e.target.value as Status)}>
           <option value="all">Any status</option>
           <option value="todo">To do</option>
-          <option value="attempted">Attempted</option>
-          <option value="solved">Solved</option>
+          <option value="done">Done</option>
         </select>
         <select value={source} onChange={(e) => setSource(e.target.value as "all" | "verified" | "ai")}>
           <option value="all">Verified + AI</option>
@@ -102,7 +97,7 @@ export function ProblemsPage() {
             <th>Area</th>
             <th>Type</th>
             <th>Difficulty</th>
-            <th>Acc.</th>
+            <th>Last done</th>
           </tr>
         </thead>
         <tbody>
@@ -111,7 +106,7 @@ export function ProblemsPage() {
             const st = statusOf(q.id);
             return (
               <tr key={q.id} onClick={() => navigate(`/q/${encodeURIComponent(q.id)}`)}>
-                <td className={`st st-${st}`}>{st === "solved" ? "✓" : st === "attempted" ? "•" : ""}</td>
+                <td className={`st st-${st}`}>{st === "done" ? "✓" : ""}</td>
                 <td>
                   <div className="ptitle">
                     {q.title}
@@ -126,7 +121,7 @@ export function ProblemsPage() {
                 <td>
                   <DiffBadge d={q.difficulty} />
                 </td>
-                <td className="muted small">{p ? `${Math.round((p.correct / p.attempts) * 100)}%` : "—"}</td>
+                <td className="muted small">{p ? new Date(p.lastSeen).toLocaleDateString() : "—"}</td>
               </tr>
             );
           })}

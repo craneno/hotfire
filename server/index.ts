@@ -3,23 +3,13 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import express, { type NextFunction, type Request, type Response } from "express";
 import { z } from "zod";
-
-try {
-  process.loadEnvFile(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", ".env"));
-} catch {
-  /* no .env: AI features fall back gracefully */
-}
-
-const { AiError, generateQuestions, gradeOpenAnswer, importQuestions } = await import("./ai.ts");
-const { aiConfig } = await import("./llm.ts");
-const { addQuestions, approveQuestion, deleteQuestion, loadBank, NotFound, updateQuestion } = await import("./bank.ts");
-const { loadProgress, saveProgress } = await import("./progress.ts");
-const { AreaId, Difficulty, QuestionInput, QuestionType, DEFAULT_SETTINGS } = await import("../shared/schema.ts");
-const { applyAttempt } = await import("../shared/srs.ts");
+import { AreaId, DEFAULT_SETTINGS, QuestionInput } from "../shared/schema.ts";
+import { applyDone, emptyProgress } from "../shared/session.ts";
+import { addQuestions, approveQuestion, deleteQuestion, loadBank, NotFound, updateQuestion } from "./bank.ts";
+import { loadProgress, saveProgress } from "./progress.ts";
 
 const app = express();
 app.use(express.json({ limit: "2mb" }));
-
 const api = express.Router();
 
 api.get("/bank", (_req, res) => {
@@ -50,13 +40,12 @@ api.get("/progress", (_req, res) => {
   res.json(loadProgress());
 });
 
+/** Mark a question done and save what you wrote. Nothing is graded. */
 api.post("/attempt", (req, res) => {
-  const body = z
-    .object({ questionId: z.string(), result: z.enum(["correct", "partial", "wrong"]) })
-    .parse(req.body);
+  const body = z.object({ questionId: z.string(), answer: z.string().max(20000) }).parse(req.body);
   const q = loadBank().questions.find((x) => x.id === body.questionId);
   if (!q) throw new NotFound(body.questionId);
-  const { progress, xpGained } = applyAttempt(loadProgress(), q, body.result);
+  const { progress, xpGained } = applyDone(loadProgress(), q, body.answer);
   saveProgress(progress);
   res.json({ progress, xpGained });
 });
@@ -78,41 +67,8 @@ api.put("/settings", (req, res) => {
 });
 
 api.post("/progress/reset", (_req, res) => {
-  const p = loadProgress();
-  saveProgress({ xp: 0, daily: {}, streak: 0, bestStreak: 0, lastActiveDay: null, questions: {}, settings: p.settings });
+  saveProgress({ ...emptyProgress(), settings: loadProgress().settings });
   res.json(loadProgress());
-});
-
-api.get("/ai/status", (_req, res) => {
-  res.json(aiConfig());
-});
-
-api.post("/ai/generate", async (req, res) => {
-  const body = z
-    .object({
-      area: AreaId,
-      count: z.number().int().min(1).max(10),
-      difficulty: z.union([Difficulty, z.literal("mixed")]),
-      types: z.array(QuestionType).min(1),
-      topic: z.string().max(200).optional(),
-    })
-    .parse(req.body);
-  const { questions: bank } = loadBank();
-  const { questions, rejected } = await generateQuestions(body, bank);
-  const added = addQuestions(questions, "ai");
-  res.json({ added, rejected });
-});
-
-api.post("/ai/grade", async (req, res) => {
-  const body = z.object({ questionId: z.string(), answer: z.string().min(1).max(8000) }).parse(req.body);
-  const q = loadBank().questions.find((x) => x.id === body.questionId);
-  if (!q) throw new NotFound(body.questionId);
-  res.json(await gradeOpenAnswer(q, body.answer));
-});
-
-api.post("/ai/import", async (req, res) => {
-  const body = z.object({ text: z.string().min(1).max(60000), area: AreaId.nullable() }).parse(req.body);
-  res.json(await importQuestions(body.text, body.area));
 });
 
 app.use("/api", api);
@@ -128,8 +84,6 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
     res.status(400).json({ error: err.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ") });
   } else if (err instanceof NotFound) {
     res.status(404).json({ error: err.message });
-  } else if (err instanceof AiError) {
-    res.status(err.status).json({ error: err.message });
   } else {
     console.error(err);
     res.status(500).json({ error: (err as Error).message ?? "internal error" });
@@ -139,7 +93,5 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
 const port = Number(process.env.PORT ?? 8787);
 app.listen(port, () => {
   const prod = process.env.NODE_ENV === "production";
-  const ai = aiConfig();
   console.log(`hotfire api on http://localhost:${port}${prod ? "" : "  (open the web app at http://localhost:5173)"}`);
-  console.log(`AI: ${ai.provider} / ${ai.model}${ai.configured ? "" : "  (no API key: AI features disabled)"}`);
 });

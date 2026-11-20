@@ -13,62 +13,51 @@ export type AreaId = z.infer<typeof AreaId>;
 export const Difficulty = z.enum(["easy", "medium", "hard"]);
 export type Difficulty = z.infer<typeof Difficulty>;
 
-export const QuestionType = z.enum(["mcq", "numeric", "open"]);
+/** Display/filter hint only. Nothing is auto-checked. */
+export const QuestionType = z.enum(["calc", "concept", "interview"]);
 export type QuestionType = z.infer<typeof QuestionType>;
 
-const Base = z.object({
+export const QuestionInput = z.object({
   /** Optional in bank files; derived from area+prompt if missing. */
   id: z.string().min(1).optional(),
   area: AreaId,
+  type: QuestionType.default("concept"),
   title: z.string().min(1),
   topic: z.string().min(1),
   difficulty: Difficulty,
   prompt: z.string().min(1),
-  /** Shown after answering. Explain the why, not just the answer. */
-  explanation: z.string().default(""),
+  /** Short final answer shown at the top of the solution, e.g. "1.80 mm". Optional. */
+  answer: z.string().default(""),
+  /** Worked solution or model answer. Empty means not written yet. */
+  solution: z.string().default(""),
+  /** Points a strong answer hits. Optional. */
+  keyPoints: z.array(z.string().min(1)).default([]),
   tags: z.array(z.string()).default([]),
   origin: z.enum(["human", "ai"]).default("human"),
   createdAt: z.string().optional(),
 });
-
-export const McqQuestion = Base.extend({
-  type: z.literal("mcq"),
-  choices: z.array(z.string().min(1)).min(2),
-  answerIndex: z.number().int().min(0),
-}).refine((q) => q.answerIndex < q.choices.length, { message: "answerIndex out of range" });
-
-export const NumericQuestion = Base.extend({
-  type: z.literal("numeric"),
-  answer: z.number(),
-  /** Accepted relative error in percent. 0 means exact. */
-  tolerancePct: z.number().min(0).default(2),
-  unit: z.string().default(""),
-});
-
-export const OpenQuestion = Base.extend({
-  type: z.literal("open"),
-  /** Key points a strong answer hits. Used by the AI grader and for self-grading. */
-  rubric: z.array(z.string().min(1)).min(1),
-  modelAnswer: z.string().min(1),
-});
-
-export const QuestionInput = z.discriminatedUnion("type", [McqQuestion, NumericQuestion, OpenQuestion]);
 export type QuestionInput = z.input<typeof QuestionInput>;
 export type QuestionParsed = z.output<typeof QuestionInput>;
 
 /** A question as served to the client: id is resolved and bank status attached. */
 export type Question = QuestionParsed & { id: string; verified: boolean };
 
-/* ---------------- Progress / spaced repetition ---------------- */
+/* ---------------- Progress ---------------- */
+
+export type SavedAnswer = { at: string; text: string };
 
 export type QuestionProgress = {
   attempts: number;
-  correct: number;
-  /** Leitner box 0..5. Higher = better known. */
-  box: number;
   lastSeen: string;
-  dueAt: string;
-  lastResult: "correct" | "partial" | "wrong";
+  /** Most recent first, capped. */
+  answers: SavedAnswer[];
+};
+
+export type Settings = {
+  focusAreas: AreaId[];
+  dailyGoalXp: number;
+  sessionLength: number;
+  verifiedOnly: boolean;
 };
 
 export type Progress = {
@@ -82,13 +71,6 @@ export type Progress = {
   settings: Settings;
 };
 
-export type Settings = {
-  focusAreas: AreaId[];
-  dailyGoalXp: number;
-  sessionLength: number;
-  verifiedOnly: boolean;
-};
-
 export const DEFAULT_SETTINGS: Settings = {
   focusAreas: ["manufacturing", "stage-prop", "combustion-devices", "battery-pack"],
   dailyGoalXp: 60,
@@ -97,21 +79,3 @@ export const DEFAULT_SETTINGS: Settings = {
 };
 
 export const XP_BY_DIFFICULTY: Record<Difficulty, number> = { easy: 10, medium: 20, hard: 30 };
-
-/* ---------------- AI payloads ---------------- */
-
-export type GradeResult = {
-  score: number;
-  verdict: "correct" | "partial" | "wrong";
-  hits: string[];
-  misses: string[];
-  feedback: string;
-};
-
-export type GenerateRequest = {
-  area: AreaId;
-  count: number;
-  difficulty: Difficulty | "mixed";
-  types: QuestionType[];
-  topic?: string;
-};

@@ -1,15 +1,4 @@
-import type {
-  AreaId,
-  GenerateRequest,
-  GradeResult,
-  Progress,
-  Question,
-  QuestionInput,
-  QuestionProgress,
-  Settings,
-} from "../shared/schema.ts";
-
-export type AiStatus = { provider: "google" | "anthropic"; model: string; configured: boolean };
+import type { Progress, Question, QuestionInput, Settings } from "../shared/schema.ts";
 
 export type BankError = { file: string; index: number; message: string };
 
@@ -32,18 +21,8 @@ export const api = {
   remove: (id: string) => req<{ ok: true }>("DELETE", `/bank/${id}`),
 
   progress: () => req<Progress>("GET", "/progress"),
-  attempt: (questionId: string, result: QuestionProgress["lastResult"]) =>
-    req<{ progress: Progress; xpGained: number }>("POST", "/attempt", { questionId, result }),
+  done: (questionId: string, answer: string) =>
+    req<{ progress: Progress; xpGained: number }>("POST", "/attempt", { questionId, answer }),
   settings: (s: Partial<Settings>) => req<Progress>("PUT", "/settings", s),
   resetProgress: () => req<Progress>("POST", "/progress/reset"),
-
-  aiStatus: () => req<AiStatus>("GET", "/ai/status"),
-  generate: (r: GenerateRequest) => req<{ added: Question[]; rejected: string[] }>("POST", "/ai/generate", r),
-  grade: (questionId: string, answer: string) =>
-    req<GradeResult & { followUp: string }>("POST", "/ai/grade", { questionId, answer }),
-  importText: (text: string, area: AreaId | null) =>
-    req<{ drafts: { question: QuestionInput; inferred: string }[]; rejected: string[] }>("POST", "/ai/import", {
-      text,
-      area,
-    }),
 };

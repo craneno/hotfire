@@ -1,90 +1,98 @@
 [
   {
     "area": "manufacturing",
-    "type": "numeric",
     "title": "Tank Wall Hoop Thickness",
     "topic": "Pressure vessels",
     "difficulty": "easy",
+    "type": "calc",
     "prompt": "A cylindrical Al-Li propellant tank is 3.7 m in diameter with a maximum expected operating pressure (MEOP) of 3.5 bar (gauge). Material yield strength is 450 MPa and the design requires a yield factor of safety of 1.25. Using thin-wall hoop stress only (ignore axial loads, welds and knockdowns), what is the minimum wall thickness in mm?",
-    "answer": 1.8,
-    "tolerancePct": 2,
-    "unit": "mm",
-    "explanation": "Hoop stress in a thin-walled cylinder: σ = P·D / (2t). Set σ = σ_y / FS and solve for t:\nt = P·D·FS / (2σ_y) = (0.35 MPa × 3700 mm × 1.25) / (2 × 450 MPa) = 1618.75 / 900 ≈ 1.80 mm.\nIn reality weld lands are thicker (weld knockdown factor), and axial compression from vehicle loads often drives the design for the upper part of the stack, not pressure.",
-    "tags": ["pressure vessel", "hoop stress", "hand calc"],
+    "answer": "1.8 mm",
+    "solution": "Hoop stress in a thin-walled cylinder: σ = P·D / (2t). Set σ = σ_y / FS and solve for t:\nt = P·D·FS / (2σ_y) = (0.35 MPa × 3700 mm × 1.25) / (2 × 450 MPa) = 1618.75 / 900 ≈ 1.80 mm.\nIn reality weld lands are thicker (weld knockdown factor), and axial compression from vehicle loads often drives the design for the upper part of the stack, not pressure.",
+    "keyPoints": [],
+    "tags": [
+      "pressure vessel",
+      "hoop stress",
+      "hand calc"
+    ],
     "origin": "ai"
   },
   {
     "area": "manufacturing",
-    "type": "mcq",
     "title": "Why Friction Stir Weld",
     "topic": "Welding",
     "difficulty": "easy",
-    "prompt": "Large aluminum-lithium and 2xxx-series propellant tanks are commonly joined with friction stir welding (FSW) instead of fusion welding (TIG/VPPA). What is the main reason?",
-    "choices": [
-      "FSW is much faster to set up for low-volume production and needs no fixturing",
-      "FSW is solid-state: the metal never melts, avoiding solidification cracking and porosity these alloys are prone to",
-      "FSW produces a joint stronger than the parent metal in every temper",
-      "FSW eliminates the need for any post-weld inspection"
+    "type": "concept",
+    "prompt": "Large aluminum-lithium and 2xxx-series propellant tanks are commonly joined with friction stir welding (FSW) instead of fusion welding (TIG/VPPA). What is the main reason?\n\nA) FSW is much faster to set up for low-volume production and needs no fixturing\nB) FSW is solid-state: the metal never melts, avoiding solidification cracking and porosity these alloys are prone to\nC) FSW produces a joint stronger than the parent metal in every temper\nD) FSW eliminates the need for any post-weld inspection",
+    "answer": "B) FSW is solid-state: the metal never melts, avoiding solidification cracking and porosity these alloys are prone to",
+    "solution": "2xxx and Al-Li alloys are hard to fusion weld: they are susceptible to hot (solidification) cracking and hydrogen porosity, and the fusion zone loses much of the parent strength. FSW plasticizes the metal below its melting point and stirs it together, so there is no solidification microstructure. Joints are typically stronger and more repeatable than fusion welds, though still below parent strength. FSW actually needs very stiff fixturing because of the large forge forces, and joints are still inspected (e.g. for root defects / kissing bonds with phased-array UT).",
+    "keyPoints": [],
+    "tags": [
+      "welding",
+      "fsw",
+      "aluminum"
     ],
-    "answerIndex": 1,
-    "explanation": "2xxx and Al-Li alloys are hard to fusion weld: they are susceptible to hot (solidification) cracking and hydrogen porosity, and the fusion zone loses much of the parent strength. FSW plasticizes the metal below its melting point and stirs it together, so there is no solidification microstructure. Joints are typically stronger and more repeatable than fusion welds, though still below parent strength. FSW actually needs very stiff fixturing because of the large forge forces, and joints are still inspected (e.g. for root defects / kissing bonds with phased-array UT).",
-    "tags": ["welding", "fsw", "aluminum"],
     "origin": "ai"
   },
   {
     "area": "manufacturing",
-    "type": "numeric",
     "title": "Bonus Tolerance at MMC",
     "topic": "GD&T",
     "difficulty": "medium",
+    "type": "calc",
     "prompt": "A hole is dimensioned Ø10.0 +0.2/−0.0 mm with a position tolerance of Ø0.1 mm at MMC (Ⓜ). An inspected part has a hole that measures Ø10.15 mm. What is the total position tolerance allowed for this hole, in mm (diameter)?",
-    "answer": 0.25,
-    "tolerancePct": 0,
-    "unit": "mm",
-    "explanation": "For a hole, MMC is the smallest size: Ø10.0. The position tolerance applies at MMC, and you gain bonus tolerance equal to the departure from MMC.\nBonus = 10.15 − 10.00 = 0.15 mm.\nTotal allowed position = 0.10 + 0.15 = Ø0.25 mm.\nThe idea: a bigger hole can be further off-location and still accept the mating pin, so function is preserved.",
-    "tags": ["gd&t", "inspection"],
+    "answer": "0.25 mm",
+    "solution": "For a hole, MMC is the smallest size: Ø10.0. The position tolerance applies at MMC, and you gain bonus tolerance equal to the departure from MMC.\nBonus = 10.15 − 10.00 = 0.15 mm.\nTotal allowed position = 0.10 + 0.15 = Ø0.25 mm.\nThe idea: a bigger hole can be further off-location and still accept the mating pin, so function is preserved.",
+    "keyPoints": [],
+    "tags": [
+      "gd&t",
+      "inspection"
+    ],
     "origin": "ai"
   },
   {
     "area": "manufacturing",
-    "type": "numeric",
     "title": "Bolt Torque for Preload",
     "topic": "Fasteners",
     "difficulty": "easy",
+    "type": "calc",
     "prompt": "You need 15 kN of preload in an M8 bolt. Using the short-form torque equation T = K·F·d with a nut factor K = 0.20, what installation torque should you specify, in N·m?",
-    "answer": 24,
-    "tolerancePct": 1,
-    "unit": "N·m",
-    "explanation": "T = K·F·d = 0.20 × 15,000 N × 0.008 m = 24 N·m.\nThe nut factor lumps thread and under-head friction, so preload scatter from torque control is roughly ±25-30%. For critical joints you'd tighten the scatter with lubrication control, torque-angle, or direct preload measurement (ultrasonic or load-indicating washers).",
-    "tags": ["fasteners", "preload", "hand calc"],
+    "answer": "24 N·m",
+    "solution": "T = K·F·d = 0.20 × 15,000 N × 0.008 m = 24 N·m.\nThe nut factor lumps thread and under-head friction, so preload scatter from torque control is roughly ±25-30%. For critical joints you'd tighten the scatter with lubrication control, torque-angle, or direct preload measurement (ultrasonic or load-indicating washers).",
+    "keyPoints": [],
+    "tags": [
+      "fasteners",
+      "preload",
+      "hand calc"
+    ],
     "origin": "ai"
   },
   {
     "area": "manufacturing",
-    "type": "mcq",
     "title": "NDT for Buried Porosity",
     "topic": "NDT",
     "difficulty": "easy",
-    "prompt": "You need to find subsurface porosity in a 12 mm thick aluminum butt weld. Which inspection method is the best fit?",
-    "choices": [
-      "Liquid penetrant testing",
-      "Magnetic particle testing",
-      "Radiographic testing (X-ray / CT)",
-      "Visual inspection with 10× magnification"
+    "type": "concept",
+    "prompt": "You need to find subsurface porosity in a 12 mm thick aluminum butt weld. Which inspection method is the best fit?\n\nA) Liquid penetrant testing\nB) Magnetic particle testing\nC) Radiographic testing (X-ray / CT)\nD) Visual inspection with 10× magnification",
+    "answer": "C) Radiographic testing (X-ray / CT)",
+    "solution": "Porosity is volumetric and below the surface, so you need a volumetric method. Radiography images density differences through the thickness and is the classic choice for weld porosity (UT also works but is better at planar flaws like lack of fusion). Penetrant and visual only find surface-breaking defects. Magnetic particle requires a ferromagnetic material, so it doesn't work on aluminum.",
+    "keyPoints": [],
+    "tags": [
+      "ndt",
+      "welding",
+      "inspection"
     ],
-    "answerIndex": 2,
-    "explanation": "Porosity is volumetric and below the surface, so you need a volumetric method. Radiography images density differences through the thickness and is the classic choice for weld porosity (UT also works but is better at planar flaws like lack of fusion). Penetrant and visual only find surface-breaking defects. Magnetic particle requires a ferromagnetic material, so it doesn't work on aluminum.",
-    "tags": ["ndt", "welding", "inspection"],
     "origin": "ai"
   },
   {
     "area": "manufacturing",
-    "type": "open",
     "title": "Inconel HAZ Cracking",
     "topic": "Root cause",
     "difficulty": "hard",
+    "type": "interview",
     "prompt": "A batch of TIG-welded Inconel 718 brackets passed post-weld inspection, but after the post-weld age (precipitation heat treatment) cycle, several show cracks in the heat-affected zone. Walk me through how you'd investigate and what you think is going on.",
-    "rubric": [
+    "answer": "",
+    "solution": "First I'd quarantine the batch and anything else welded with the same procedure or material lot, because if it's a process issue it isn't limited to the parts that cracked. Cracking that shows up in the HAZ only after aging, in a precipitation-hardened nickel alloy like 718, points me to strain-age cracking or liquation cracking that opened up when the gamma-double-prime precipitated and the material lost ductility while residual weld stresses relaxed. So I'd pull the records: were the parts solution annealed before welding, what was the furnace ramp rate through the aging range, what was the heat input and how stiff was the fixturing. Then I'd section a cracked part and a good part and do metallography and SEM fractography to confirm intergranular cracking and look for Laves phase or liquated grain boundaries. I'd compare against previous good batches to find what changed: material lot, operator, fixture, furnace. The fix is usually some combination of lower heat input, less restraint, a solution anneal before welding, and a faster ramp through the aging range, and I'd re-qualify the procedure with test coupons before releasing more parts.\n\nWhat interviewers look for: Inconel 718 was designed to be more weldable than other gamma-prime-strengthened alloys because gamma-double-prime precipitates sluggishly, but it can still suffer HAZ liquation cracking (Nb-rich Laves/carbide constituents liquating at grain boundaries) and strain-age cracking under high restraint. Interviewers want to see containment, a hypothesis grounded in metallurgy, data to confirm it, and a corrective action that changes the process.",
+    "keyPoints": [
       "Contain first: quarantine the batch and anything welded on the same procedure/heat lot",
       "Identifies likely mechanism: strain-age cracking and/or HAZ liquation cracking in a precipitation-hardened nickel alloy",
       "Checks the heat-treat sequence: whether parts were solution annealed before welding and the heating rate through the aging range",
@@ -93,19 +101,24 @@
       "Compares against good parts and process records to find what changed (material lot, operator, furnace, fixture)",
       "Defines corrective action and verification, e.g. procedure change plus re-qualification, not just re-inspection"
     ],
-    "modelAnswer": "First I'd quarantine the batch and anything else welded with the same procedure or material lot, because if it's a process issue it isn't limited to the parts that cracked. Cracking that shows up in the HAZ only after aging, in a precipitation-hardened nickel alloy like 718, points me to strain-age cracking or liquation cracking that opened up when the gamma-double-prime precipitated and the material lost ductility while residual weld stresses relaxed. So I'd pull the records: were the parts solution annealed before welding, what was the furnace ramp rate through the aging range, what was the heat input and how stiff was the fixturing. Then I'd section a cracked part and a good part and do metallography and SEM fractography to confirm intergranular cracking and look for Laves phase or liquated grain boundaries. I'd compare against previous good batches to find what changed: material lot, operator, fixture, furnace. The fix is usually some combination of lower heat input, less restraint, a solution anneal before welding, and a faster ramp through the aging range, and I'd re-qualify the procedure with test coupons before releasing more parts.",
-    "explanation": "Inconel 718 was designed to be more weldable than other gamma-prime-strengthened alloys because gamma-double-prime precipitates sluggishly, but it can still suffer HAZ liquation cracking (Nb-rich Laves/carbide constituents liquating at grain boundaries) and strain-age cracking under high restraint. Interviewers want to see containment, a hypothesis grounded in metallurgy, data to confirm it, and a corrective action that changes the process.",
-    "tags": ["welding", "inconel", "root cause", "heat treatment"],
+    "tags": [
+      "welding",
+      "inconel",
+      "root cause",
+      "heat treatment"
+    ],
     "origin": "ai"
   },
   {
     "area": "manufacturing",
-    "type": "open",
     "title": "Nonconforming Part Before Milestone",
     "topic": "Nonconformance / MRB",
     "difficulty": "medium",
+    "type": "interview",
     "prompt": "You're the responsible build engineer. Hours before a major integration milestone, a critical machined part comes back from inspection with one bore 0.05 mm over the drawing limit. The schedule pressure is enormous. What do you do?",
-    "rubric": [
+    "answer": "",
+    "solution": "First, it gets documented as a nonconformance. I'm not going to quietly install it, and I'm not going to scrap it on reflex either. I'd figure out what that bore does: what mates with it, whether it's a press fit, a bearing, or a sealing surface, and what the tolerance is actually protecting. Then I'd do a quick analysis with the design owner: does 0.05 mm oversize still give the fit, does it change preload or sealing, does it affect the stack-up. Based on that we pick a disposition through MRB: use-as-is with rationale, rework (for example a bushing or sleeve), repair, or scrap. In parallel I'd look for a schedule save: is there a spare, can we pull a part from a later unit, can we select a mating part to restore the fit. Finally I'd make sure someone drives root cause at the machine shop, whether it was tool wear, thermal growth or the program, so the next part doesn't do the same thing.\n\nWhat interviewers look for: Responsible-engineer culture means owning the decision with data, moving fast, and never hiding a nonconformance. Strong answers balance urgency against flight risk and show they know the formal disposition paths.",
+    "keyPoints": [
       "Does not quietly accept or hide it: documents a nonconformance report",
       "Understands the function of the feature: what the bore mates with and what the tolerance protects",
       "Does a quick engineering assessment (fit, stack-up, stress/sealing impact) to support a disposition",
@@ -113,9 +126,11 @@
       "Considers alternatives to protect schedule: spare part, rework, mating-part selection",
       "Drives root cause and corrective action at the source so it doesn't recur"
     ],
-    "modelAnswer": "First, it gets documented as a nonconformance. I'm not going to quietly install it, and I'm not going to scrap it on reflex either. I'd figure out what that bore does: what mates with it, whether it's a press fit, a bearing, or a sealing surface, and what the tolerance is actually protecting. Then I'd do a quick analysis with the design owner: does 0.05 mm oversize still give the fit, does it change preload or sealing, does it affect the stack-up. Based on that we pick a disposition through MRB: use-as-is with rationale, rework (for example a bushing or sleeve), repair, or scrap. In parallel I'd look for a schedule save: is there a spare, can we pull a part from a later unit, can we select a mating part to restore the fit. Finally I'd make sure someone drives root cause at the machine shop, whether it was tool wear, thermal growth or the program, so the next part doesn't do the same thing.",
-    "explanation": "Responsible-engineer culture means owning the decision with data, moving fast, and never hiding a nonconformance. Strong answers balance urgency against flight risk and show they know the formal disposition paths.",
-    "tags": ["mrb", "ownership", "behavioral"],
+    "tags": [
+      "mrb",
+      "ownership",
+      "behavioral"
+    ],
     "origin": "ai"
   }
 ]

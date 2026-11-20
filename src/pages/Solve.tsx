@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { isDone } from "../../shared/session.ts";
 import { api } from "../api.ts";
 import { navigate, useStore } from "../App.tsx";
 import { QuestionCard } from "../components/QuestionCard.tsx";
@@ -18,10 +19,10 @@ export function SolvePage({ id }: { id: string }) {
       </div>
     );
 
-  // Next unsolved problem in the same area, wrapping around.
+  // Next not-done problem in the same area, wrapping around.
   const sameArea = bank.filter((x) => x.area === q.area);
   const idx = sameArea.findIndex((x) => x.id === q.id);
-  const next = [...sameArea.slice(idx + 1), ...sameArea.slice(0, idx)].find((x) => !progress.questions[x.id]?.correct);
+  const next = [...sameArea.slice(idx + 1), ...sameArea.slice(0, idx)].find((x) => !isDone(progress, x.id));
   const p = progress.questions[q.id];
 
   return (
@@ -31,7 +32,7 @@ export function SolvePage({ id }: { id: string }) {
         <span className="spacer" />
         {p && (
           <span className="muted small">
-            {p.correct}/{p.attempts} correct · next review {new Date(p.dueAt).toLocaleDateString()}
+            Done {p.attempts}× · last {new Date(p.lastSeen).toLocaleDateString()}
           </span>
         )}
         <button className="btn small ghost" onClick={() => setEditing((e) => !e)}>
@@ -53,7 +54,7 @@ export function SolvePage({ id }: { id: string }) {
         <QuestionCard
           key={attempt}
           q={q}
-          continueLabel={next ? "Next problem →" : "Try again"}
+          continueLabel={next ? "Next problem →" : "Do it again"}
           onContinue={() => (next ? navigate(`/q/${encodeURIComponent(next.id)}`) : setAttempt((a) => a + 1))}
         />
       )}

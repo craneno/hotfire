@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import type { GradeResult, Question, QuestionProgress } from "../../shared/schema.ts";
-import { checkNumeric, xpFor } from "../../shared/srs.ts";
+import { XP_BY_DIFFICULTY, type Question, type SavedAnswer } from "../../shared/schema.ts";
 import { api } from "../api.ts";
 import { useStore } from "../App.tsx";
 import { AreaBadge, DiffBadge, SourceBadge, TYPE_LABEL } from "./Badges.tsx";
+import { Solution } from "./Solution.tsx";
 
-type Result = QuestionProgress["lastResult"];
-type Phase = "answering" | "grading" | "done";
+const PLACEHOLDER = {
+  calc: "Work it like a whiteboard: knowns, equation, numbers, answer with units.",
+  concept: "Your answer and the one-line reason why.",
+  interview: "Answer like you would out loud: structure, assumptions, what you'd actually do.",
+};
 
 export function QuestionCard({
   q,
@@ -15,59 +18,30 @@ export function QuestionCard({
   onContinue,
 }: {
   q: Question;
-  /** Called once the attempt is recorded. */
-  onDone?: (result: Result, xp: number) => void;
+  onDone?: (xp: number) => void;
   continueLabel?: string;
   onContinue?: () => void;
 }) {
-  const { ai, setProgress, reloadBank } = useStore();
-  const [phase, setPhase] = useState<Phase>("answering");
-  const [result, setResult] = useState<Result | null>(null);
+  const { progress, setProgress, reloadBank } = useStore();
+  // Snapshot earlier answers before this attempt adds one.
+  const [previous] = useState<SavedAnswer[]>(() => progress.questions[q.id]?.answers ?? []);
+  const [text, setText] = useState("");
+  const [done, setDone] = useState(false);
   const [xp, setXp] = useState(0);
   const [error, setError] = useState<string | null>(null);
-
-  // per-type input state
-  const [choice, setChoice] = useState<number | null>(null);
-  const [num, setNum] = useState("");
-  const [text, setText] = useState("");
-  const [grade, setGrade] = useState<(GradeResult & { followUp: string }) | null>(null);
-  const [revealed, setRevealed] = useState(false);
   const [reviewMsg, setReviewMsg] = useState<string | null>(null);
   const continueRef = useRef<HTMLButtonElement>(null);
 
-  async function record(r: Result) {
-    setResult(r);
-    setPhase("done");
+  async function finish() {
+    if (done) return;
+    setDone(true);
     try {
-      const { progress, xpGained } = await api.attempt(q.id, r);
-      setProgress(progress);
-      setXp(xpGained);
-      onDone?.(r, xpGained);
+      const r = await api.done(q.id, text);
+      setProgress(r.progress);
+      setXp(r.xpGained);
+      onDone?.(r.xpGained);
     } catch (e) {
       setError((e as Error).message);
-    }
-  }
-
-  function check() {
-    if (phase !== "answering") return;
-    if (q.type === "mcq" && choice !== null) record(choice === q.answerIndex ? "correct" : "wrong");
-    if (q.type === "numeric" && num.trim()) {
-      const given = Number(num.replace(/,/g, ""));
-      record(checkNumeric(given, q.answer, q.tolerancePct) ? "correct" : "wrong");
-    }
-  }
-
-  async function aiGrade() {
-    if (!text.trim()) return;
-    setPhase("grading");
-    setError(null);
-    try {
-      const g = await api.grade(q.id, text);
-      setGrade(g);
-      await record(g.verdict);
-    } catch (e) {
-      setError((e as Error).message);
-      setPhase("answering");
     }
   }
 
@@ -83,28 +57,16 @@ export function QuestionCard({
   }
 
   useEffect(() => {
-    if (phase === "done") continueRef.current?.focus();
-  }, [phase]);
+    if (done) continueRef.current?.focus();
+  }, [done]);
 
-  // Keyboard: 1-4 picks a choice, Enter checks / continues.
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      const tag = (e.target as HTMLElement).tagName;
-      if (tag === "TEXTAREA" || (tag === "INPUT" && e.key !== "Enter")) return;
-      if (q.type === "mcq" && phase === "answering" && /^[1-9]$/.test(e.key)) {
-        const i = Number(e.key) - 1;
-        if (i < q.choices.length) setChoice(i);
-      }
-      if (e.key === "Enter" && phase === "answering" && q.type !== "open") {
-        e.preventDefault();
-        check();
-      }
+  // Ctrl/Cmd+Enter finishes from inside the textarea.
+  function onKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      finish();
     }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  });
-
-  const potential = xpFor(q, "correct");
+  }
 
   return (
     <div className="qcard">
@@ -120,166 +82,60 @@ export function QuestionCard({
       <h2 className="qtitle">{q.title}</h2>
       <div className="qprompt">{q.prompt}</div>
 
-      {q.type === "mcq" && (
-        <div className="choices">
-          {q.choices.map((c, i) => {
-            let cls = "choice";
-            if (phase === "done") {
-              if (i === q.answerIndex) cls += " right";
-              else if (i === choice) cls += " wrong";
-            } else if (i === choice) cls += " picked";
-            return (
-              <button key={i} className={cls} disabled={phase !== "answering"} onClick={() => setChoice(i)}>
-                <span className="key">{i + 1}</span>
-                {c}
-              </button>
-            );
-          })}
-        </div>
-      )}
-
-      {q.type === "numeric" && (
-        <div className="numeric">
-          <input
+      {!done ? (
+        <>
+          <textarea
             autoFocus
-            inputMode="decimal"
-            placeholder="Your answer"
-            value={num}
-            disabled={phase !== "answering"}
-            onChange={(e) => setNum(e.target.value)}
+            className="openans"
+            placeholder={PLACEHOLDER[q.type]}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={onKeyDown}
+            rows={q.type === "concept" ? 4 : 8}
           />
-          <span className="unit">{q.unit}</span>
-        </div>
-      )}
-
-      {q.type === "open" && (
-        <textarea
-          className="openans"
-          placeholder="Answer like you would out loud in the interview. Structure, assumptions, numbers."
-          value={text}
-          disabled={phase !== "answering"}
-          onChange={(e) => setText(e.target.value)}
-          rows={8}
-        />
-      )}
-
-      {error && <div className="banner err">{error}</div>}
-
-      {phase !== "done" && (
-        <div className="actions">
-          {q.type !== "open" && (
-            <button
-              className="btn primary"
-              disabled={(q.type === "mcq" && choice === null) || (q.type === "numeric" && !num.trim())}
-              onClick={check}
-            >
-              Check <span className="xp-hint">+{potential} XP</span>
-            </button>
-          )}
-          {q.type === "open" && (
-            <>
-              {ai.configured && (
-                <button className="btn primary" disabled={!text.trim() || phase === "grading"} onClick={aiGrade}>
-                  {phase === "grading" ? "Grading…" : "Grade with AI"}
-                </button>
-              )}
-              <button className="btn" disabled={phase === "grading"} onClick={() => setRevealed(true)}>
-                {ai.configured ? "Self-grade instead" : "Reveal & self-grade"}
-              </button>
-            </>
-          )}
-        </div>
-      )}
-
-      {q.type === "open" && revealed && phase === "answering" && (
-        <div className="feedback neutral">
-          <h4>What a strong answer covers</h4>
-          <ul className="rubric">
-            {q.rubric.map((r, i) => (
-              <li key={i}>{r}</li>
-            ))}
-          </ul>
-          <h4>Model answer</h4>
-          <p className="pre">{q.modelAnswer}</p>
           <div className="actions">
-            <span className="muted">How did you do?</span>
-            <button className="btn good" onClick={() => record("correct")}>Nailed it</button>
-            <button className="btn meh" onClick={() => record("partial")}>Partial</button>
-            <button className="btn bad" onClick={() => record("wrong")}>Missed it</button>
+            <button className="btn primary" onClick={finish}>
+              Done <span className="xp-hint">+{XP_BY_DIFFICULTY[q.difficulty]} XP</span>
+            </button>
+            <span className="muted small">Ctrl+Enter · solved on paper? Just hit Done.</span>
           </div>
-        </div>
-      )}
-
-      {phase === "done" && result && (
-        <div className={`feedback ${result}`}>
-          <div className="verdict">
-            <strong>{result === "correct" ? "Correct!" : result === "partial" ? "Partially there" : "Not quite"}</strong>
-            {xp > 0 && <span className="xp-gain">+{xp} XP</span>}
+        </>
+      ) : (
+        <>
+          <div className="compare">
+            <section>
+              <h4>Your answer</h4>
+              {text.trim() ? <p className="pre">{text}</p> : <p className="muted">Nothing written.</p>}
+            </section>
+            <section className="ref">
+              <h4>Solution</h4>
+              <Solution q={q} />
+            </section>
           </div>
 
-          {q.type === "numeric" && (
-            <p>
-              Answer: <strong>{fmt(q.answer)} {q.unit}</strong>
-              {q.tolerancePct > 0 && <span className="muted"> (±{q.tolerancePct}%)</span>}
-              {num && <span className="muted"> · you said {num}</span>}
-            </p>
-          )}
-
-          {grade && (
-            <>
-              <p>
-                Score <strong>{grade.score}/100</strong> — {grade.feedback}
-              </p>
-              {grade.hits.length > 0 && (
-                <ul className="hits">
-                  {grade.hits.map((h, i) => (
-                    <li key={i}>✓ {h}</li>
-                  ))}
-                </ul>
-              )}
-              {grade.misses.length > 0 && (
-                <ul className="misses">
-                  {grade.misses.map((h, i) => (
-                    <li key={i}>✗ {h}</li>
-                  ))}
-                </ul>
-              )}
-              {grade.followUp && (
-                <p className="followup">
-                  <span className="muted">Interviewer follow-up:</span> {grade.followUp}
-                </p>
-              )}
-            </>
-          )}
-
-          {q.type === "open" && (grade || !revealed) && (
+          {previous.length > 0 && (
             <details>
-              <summary>Model answer & rubric</summary>
-              <ul className="rubric">
-                {q.rubric.map((r, i) => (
-                  <li key={i}>{r}</li>
-                ))}
-              </ul>
-              <p className="pre">{q.modelAnswer}</p>
+              <summary>Your previous answers ({previous.length})</summary>
+              {previous.map((a, i) => (
+                <div key={i} className="prev">
+                  <span className="muted small">{new Date(a.at).toLocaleString()}</span>
+                  <p className="pre">{a.text}</p>
+                </div>
+              ))}
             </details>
           )}
 
-          {q.explanation && (
-            <>
-              <h4>Why</h4>
-              <p className="pre">{q.explanation}</p>
-            </>
-          )}
-
+          {error && <div className="banner err">{error}</div>}
           <div className="actions">
+            {xp > 0 && <span className="xp-gain">+{xp} XP</span>}
             {!q.verified && !reviewMsg && (
               <>
-                <span className="muted">AI question. Is it right?</span>
+                <span className="muted small">AI question. Is the solution right?</span>
                 <button className="btn small" onClick={() => review("approve")}>✓ Verify</button>
                 <button className="btn small" onClick={() => review("reject")}>✕ Reject</button>
               </>
             )}
-            {reviewMsg && <span className="muted">{reviewMsg}</span>}
+            {reviewMsg && <span className="muted small">{reviewMsg}</span>}
             <span className="spacer" />
             {onContinue && (
               <button ref={continueRef} className="btn primary" onClick={onContinue}>
@@ -287,12 +143,8 @@ export function QuestionCard({
               </button>
             )}
           </div>
-        </div>
+        </>
       )}
     </div>
   );
-}
-
-function fmt(n: number) {
-  return Math.abs(n) >= 1e5 || (Math.abs(n) < 1e-3 && n !== 0) ? n.toExponential(3) : String(+n.toPrecision(6));
 }
