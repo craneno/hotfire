@@ -15,7 +15,12 @@
       "Back purge; automate girth welds on a rotator",
       "PT and RT, hydro proof, leak test"
     ],
-    "tags": ["pressure vessel", "welding", "stainless", "spacex", "interview"],
+    "tags": [
+      "pressure vessel",
+      "welding",
+      "stainless",
+      "interview"
+    ],
     "origin": "human"
   },
   {
@@ -35,7 +40,12 @@
       "Self-fixturing joints; automatable seams",
       "Sequence for distortion"
     ],
-    "tags": ["dfm", "welding", "accumulator", "spacex", "interview"],
+    "tags": [
+      "dfm",
+      "welding",
+      "accumulator",
+      "interview"
+    ],
     "origin": "human"
   },
   {
@@ -54,7 +64,11 @@
       "Custom: automated welded plate girders",
       "Takt time, bottleneck, fixtures, SPC"
     ],
-    "tags": ["production", "scaling", "spacex", "interview"],
+    "tags": [
+      "production",
+      "scaling",
+      "interview"
+    ],
     "origin": "human"
   },
   {
@@ -73,7 +87,12 @@
       "Allows looser upstream tolerances; less scrap",
       "Tradeoff: trim tooling at the weld cell, edge cleanliness"
     ],
-    "tags": ["fit-up", "domes", "tolerance", "spacex", "interview"],
+    "tags": [
+      "fit-up",
+      "domes",
+      "tolerance",
+      "interview"
+    ],
     "origin": "human"
   },
   {
@@ -86,7 +105,86 @@
     "answer": "≈ 3151 mm blank; ≈ +0.3% strain on OD (−0.3% on ID)",
     "solution": "K-factor = neutral-axis offset from the inside surface divided by thickness. The neutral axis keeps its length. Material outside it stretches and inside it compresses. K ≈ 0.5 for large R/t, and it falls to about 0.3–0.45 for tight bends as the axis shifts inward.\nBlank length = π·(ID + 2Kt) = π × (1000 + 3) ≈ 3151 mm.\nOuter-fiber strain ≈ (t/2)/R_n = 1.5/501.5 ≈ 0.30% tension, with equal compression on the ID. That's tiny, so a 1 m roll is well within elastic-plastic limits, but springback matters.",
     "keyPoints": [],
-    "tags": ["sheet metal", "k-factor", "rolling", "spacex", "interview"],
+    "tags": [
+      "sheet metal",
+      "k-factor",
+      "rolling",
+      "interview"
+    ],
     "origin": "human"
+  },
+  {
+    "area": "manufacturing",
+    "keyPoints": [
+      "Failure starts at weld ends, not mid-weld",
+      "Gusset tip on tube: shear lag and stiffness hard spot",
+      "Outer toe on flange: peel from flange bending",
+      "Uncoped corner where welds intersect",
+      "Fixes: soft toe, wrapped ends, cope, ground toes"
+    ],
+    "answer": "",
+    "origin": "human",
+    "type": "interview",
+    "title": "Gusset Weld Pull-Off Failure",
+    "topic": "Weld design",
+    "difficulty": "hard",
+    "prompt": "A flange is welded to the end of a tube and reinforced with triangular gussets welded to both the tube and the flange. If the flange is pulled axially off the tube, where on the gusset welds would you expect failure to start, and why?",
+    "solution": "At the weld terminations, not mid-length. The most likely spot is the gusset tip on the tube, where the gusset ends abruptly. Load funnels into the end of the weld (shear lag), and the sudden stiffness change plus the weld start/stop defects make a hot spot. The second candidate is the gusset's outer toe on the flange, where flange bending peels the weld. If the gusset corner wasn't coped, the intersection with the tube-to-flange weld is also a crack starter. Fixes: taper or radius the gusset tip (a soft toe), wrap the weld ends, cope the corner, and grind the toes smooth.",
+    "tags": [
+      "welding",
+      "gusset",
+      "stress concentration",
+      "from-notes"
+    ]
+  },
+  {
+    "area": "manufacturing",
+    "keyPoints": [
+      "Low shear flow: continuous weld unnecessary",
+      "Less heat: less distortion and HAZ softening",
+      "Faster, lighter, less filler",
+      "Cons: stitch ends are fatigue starters",
+      "Cons: crevices trap contamination; lower stiffness"
+    ],
+    "answer": "",
+    "origin": "human",
+    "type": "interview",
+    "title": "Stitch Welding Tank Stiffeners",
+    "topic": "Welding",
+    "difficulty": "medium",
+    "prompt": "Why would you use stitch (intermittent) welds instead of continuous welds to attach stiffeners to a propellant tank wall? What are the downsides?",
+    "solution": "Stiffener-to-skin joints carry low shear flow, so a continuous weld is mostly unnecessary. Stitching cuts heat input, which means less distortion and residual stress in the thin skin, and less HAZ softening of the pressure wall (a big deal for aluminum alloys). It also saves weld time, filler and mass. Downsides: every stitch end is a stress concentration and a fatigue initiation site, the gaps between stitches are crevices that trap moisture and contamination (corrosion, cleanliness for LOX service), and the stiffener is less effective in buckling than with a continuous joint.",
+    "tags": [
+      "welding",
+      "tank",
+      "stiffeners",
+      "from-notes"
+    ]
+  },
+  {
+    "area": "manufacturing",
+    "keyPoints": [
+      "Depowder before any heat treatment",
+      "Stress relieve on plate, then cut off and remove supports",
+      "Optional HIP; solution anneal; cryo for retained austenite",
+      "Age: H900 strength vs H1025/H1150 toughness",
+      "Finish-machine orifices and seals; smooth internal passages",
+      "O₂ clean, CT, proof and leak, waterflow"
+    ],
+    "answer": "",
+    "origin": "human",
+    "type": "interview",
+    "title": "Post-Processing a Printed 17-4 Injector",
+    "topic": "Additive manufacturing",
+    "difficulty": "hard",
+    "prompt": "Walk through the post-processing steps for a freshly printed (LPBF) 17-4 PH stainless injector, including heat treatment.",
+    "solution": "On the build plate: depowder first, especially the internal manifolds and orifices, because trapped powder sinters during heat treatment. Then stress relieve on the plate so it doesn't distort, and wire-EDM it off. Remove supports. HIP if fatigue or porosity matters. Solution anneal at about 1040 °C (Condition A) and cool fast. Printed 17-4 can retain austenite, so add a cryo step if needed to finish the martensite transformation. Age: H900 for strength, or H1025/H1150 for toughness and SCC resistance. Then machine sealing faces and threads, ream or EDM the orifices to final size, and smooth the internal passages (abrasive flow or chemical polish). Finish with oxygen cleaning, CT scan for blockages and porosity, CMM, proof and leak tests, and a waterflow test to verify flow and patternation.",
+    "tags": [
+      "additive",
+      "heat treatment",
+      "17-4ph",
+      "injector",
+      "from-notes"
+    ]
   }
 ]

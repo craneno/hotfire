@@ -1,0 +1,26 @@
+[
+  {
+    "area": "battery-pack",
+    "keyPoints": [
+      "Series adds voltage; parallel adds capacity; energy same",
+      "Series: weakest cell limits, needs balancing",
+      "Parallel: self-balances, needs per-cell fusing",
+      "Same power at higher V: lower current",
+      "I²R loss scales with current squared"
+    ],
+    "answer": "",
+    "origin": "human",
+    "type": "interview",
+    "title": "Cells in Series vs Parallel",
+    "topic": "Pack architecture",
+    "difficulty": "easy",
+    "prompt": "Explain connecting cells in series vs parallel. With four 3.6 V, 5 Ah cells, compare 4s and 4p, then answer the follow-up: why do high-power packs run at high voltage?",
+    "solution": "Series adds voltage at the same Ah: 4s is 14.4 V, 5 Ah. Parallel adds Ah at the same voltage: 4p is 3.6 V, 20 Ah. Energy is the same, 72 Wh, either way. Series strings carry one current, so the weakest cell limits the string, one open cell kills it, and cells need balancing. Parallel cells self-balance and share current, but a shorted cell gets fed by its neighbors, so each cell needs a fuse. Follow-up: at 360 W, 4s draws 25 A and 4p draws 100 A. I²R loss in a 10 mΩ interconnect is 6.25 W vs 100 W, 16× worse, so high voltage means thinner conductors and less heat.",
+    "tags": [
+      "series",
+      "parallel",
+      "architecture",
+      "from-notes"
+    ]
+  }
+]

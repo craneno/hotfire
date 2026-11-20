@@ -9,7 +9,11 @@
     "answer": "(a) 8× (b) 2×",
     "solution": "Deflection δ ∝ 1/(E·I), with I = b·h³/12.\n(a) h → h/2: I drops by 2³ = 8, so δ is 8× larger.\n(b) b → b/2: I halves, so δ is 2× larger.\nDepth is the cheap way to buy stiffness, which is why beams are tall and thin and I-beams put material far from the neutral axis.",
     "keyPoints": [],
-    "tags": ["beams", "area moment of inertia", "from-notes"],
+    "tags": [
+      "beams",
+      "area moment of inertia",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -22,7 +26,12 @@
     "answer": "σ_hoop = 167 MPa, σ_axial = 83 MPa, τ_in-plane = 42 MPa, τ_abs = 83 MPa",
     "solution": "σ_hoop = Pr/t = 1.0 × 500 / 3 = 166.7 MPa\nσ_axial = Pr/2t = 83.3 MPa\nIn-plane Mohr's circle: τ_max = (σ1 − σ2)/2 = (166.7 − 83.3)/2 = 41.7 MPa\nThe three principal stresses are hoop, axial and radial (≈ 0 outside, −P inside), so the largest circle spans hoop to radial: τ_abs = 166.7/2 = 83.3 MPa.\nHoop stress is twice axial, which is why cylinders split lengthwise.",
     "keyPoints": [],
-    "tags": ["pressure vessel", "mohr's circle", "principal stresses", "from-notes"],
+    "tags": [
+      "pressure vessel",
+      "mohr's circle",
+      "principal stresses",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -42,7 +51,12 @@
       "Ductile tip blunting and plastic zone vs unstable brittle fracture",
       "Fatigue crack growth (Paris law) as the common real failure"
     ],
-    "tags": ["stress-strain", "fracture", "materials", "from-notes"],
+    "tags": [
+      "stress-strain",
+      "fracture",
+      "materials",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -55,7 +69,11 @@
     "answer": "α = k/(ρ·c_p): how fast temperature changes spread through a material",
     "solution": "α = k/(ρc_p) is heat conducted divided by heat stored, in m²/s. A high α means a temperature change at the surface reaches the interior quickly, so the material equalizes fast. Copper: 401/(8960 × 385) ≈ 1.2×10⁻⁴ m²/s. 304 SS: 16.2/(8000 × 500) ≈ 4×10⁻⁶ m²/s, about 30× slower. That's why copper liners spread throat heat into the coolant and why stainless heats up locally during welding.",
     "keyPoints": [],
-    "tags": ["thermal diffusivity", "conduction", "from-notes"],
+    "tags": [
+      "thermal diffusivity",
+      "conduction",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -68,7 +86,12 @@
     "answer": "≈ 230 kW",
     "solution": "Radiation: Q = εσA(T₂⁴ − T₁⁴) = 0.8 × 5.67×10⁻⁸ × 1 × 1500⁴ ≈ 229.7 kW.\nConduction: Q = kA·ΔT/L. Convection: Q = hA·ΔT. Sensible heat absorbed: Q = m·c_p·ΔT.\nBecause of the T⁴ term, radiation only matters at high temperature, which is why radiatively cooled extensions run red hot (niobium, carbon-carbon).",
     "keyPoints": [],
-    "tags": ["radiation", "conduction", "convection", "from-notes"],
+    "tags": [
+      "radiation",
+      "conduction",
+      "convection",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -81,7 +104,11 @@
     "answer": "67.5 kPa",
     "solution": "Continuity: V₁A₁ = V₂A₂. Halving the diameter quarters the area, so V₂ = 12 m/s.\nBernoulli: ΔP = ½ρ(V₂² − V₁²) = 0.5 × 1000 × (144 − 9) = 67,500 Pa = 67.5 kPa.\nThe general steady-flow energy equation, Q − W = ṁ[Δh + ΔV²/2 + gΔz], reduces to Bernoulli when there's no heat, no work and no losses.",
     "keyPoints": [],
-    "tags": ["bernoulli", "continuity", "from-notes"],
+    "tags": [
+      "bernoulli",
+      "continuity",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -100,7 +127,11 @@
       "Pr = ν/α sets relative thickness of the two layers",
       "BL is where the convective heat-transfer resistance lives"
     ],
-    "tags": ["boundary layer", "prandtl", "from-notes"],
+    "tags": [
+      "boundary layer",
+      "prandtl",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -113,7 +144,11 @@
     "answer": "Pr = ν/α = μc_p/k. No: h = Nu·k/L, so a low-k fluid can have high Nu but low h.",
     "solution": "Pr = ν/α = μc_p/k. Typical values: water ≈ 7 at room temperature, LOX ≈ 2 at saturation, kerosene ≈ 15, air ≈ 0.7, liquid metals ≈ 0.001–0.01. Correlations give Nu ∝ Reᵐ·Prⁿ, so higher Pr raises Nu, but h = Nu·k/L. High-Pr fluids are usually high-Pr because k is low, so h isn't necessarily higher.",
     "keyPoints": [],
-    "tags": ["prandtl", "nusselt", "from-notes"],
+    "tags": [
+      "prandtl",
+      "nusselt",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -126,7 +161,10 @@
     "answer": "Re ≈ 3.0×10⁶, turbulent",
     "solution": "Re = ρVD/μ = 1141 × 5 × 0.1 / 1.9×10⁻⁴ ≈ 3.0×10⁶.\nRe is the ratio of inertial to viscous forces. Pipe flow transitions at Re ≈ 2300 and is fully turbulent above about 4000, so this is deep in turbulence. Low-viscosity cryogens are almost always turbulent in feed lines.",
     "keyPoints": [],
-    "tags": ["reynolds", "from-notes"],
+    "tags": [
+      "reynolds",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -139,7 +177,10 @@
     "answer": "Nu = hL/k: convective vs conductive heat transfer across the fluid. Nu = 1 is pure conduction.",
     "solution": "Nu = hL/k compares how well a moving fluid carries heat away from a surface to what conduction alone through a stagnant layer of the same fluid would do. Nu = 1 means no convective enhancement (pure conduction). Turbulent flows reach hundreds to thousands. You get h back from a correlation: h = Nu·k/L.",
     "keyPoints": [],
-    "tags": ["nusselt", "from-notes"],
+    "tags": [
+      "nusselt",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -152,7 +193,11 @@
     "answer": "≈ 424 K",
     "solution": "T₀ = T + V²/(2c_p) = 300 + 500²/(2 × 1005) ≈ 424.4 K.\nStatic values are what you'd measure moving with the flow, without its kinetic energy. Stagnation (total) values are what you'd get if the flow were brought to rest: adiabatically for T₀, isentropically for P₀. Incompressible: P₀ = P + ½ρV². This is why a probe facing into fast flow reads hot and high.",
     "keyPoints": [],
-    "tags": ["stagnation", "compressible", "from-notes"],
+    "tags": [
+      "stagnation",
+      "compressible",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -165,7 +210,11 @@
     "answer": "It's driven by buoyancy, which needs gravity. In microgravity there's no buoyant force, and in vacuum there's no fluid at all.",
     "solution": "Natural convection happens because hot fluid is less dense and gravity makes it rise (buoyancy ∝ ρgβΔT, the Grashof number). In orbit, effective g ≈ 0, so warm fluid doesn't rise and only conduction is left. Outside the spacecraft there's no medium, leaving radiation. Spacecraft use fans, pumped loops and radiators instead.",
     "keyPoints": [],
-    "tags": ["convection", "spacecraft thermal", "blue origin", "interview"],
+    "tags": [
+      "convection",
+      "spacecraft thermal",
+      "interview"
+    ],
     "origin": "human"
   },
   {
@@ -185,7 +234,11 @@
       "Throttle is isenthalpic",
       "Nozzle converts enthalpy to velocity"
     ],
-    "tags": ["enthalpy", "thermo cycles", "stoke", "interview"],
+    "tags": [
+      "enthalpy",
+      "thermo cycles",
+      "interview"
+    ],
     "origin": "human"
   },
   {
@@ -198,7 +251,11 @@
     "answer": "≈ 10.1 Hz",
     "solution": "ma = −kx gives ẍ + (k/m)x = 0: simple harmonic motion with ωₙ = √(k/m).\nωₙ = √(40000/10) = 63.2 rad/s, so fₙ = ωₙ/2π ≈ 10.07 Hz.\nThe rotational analog is T = Iα with torsional stiffness: ωₙ = √(k_t/I). Stiffer means higher frequency and more mass means lower, which is the basis for detuning modes like pogo.",
     "keyPoints": [],
-    "tags": ["vibration", "natural frequency", "from-notes"],
+    "tags": [
+      "vibration",
+      "natural frequency",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -217,7 +274,27 @@
       "Measured result",
       "Lessons learned; can defend every detail"
     ],
-    "tags": ["behavioral", "stoke", "interview"],
+    "tags": [
+      "behavioral",
+      "interview"
+    ],
     "origin": "human"
+  },
+  {
+    "area": "fundamentals",
+    "keyPoints": [],
+    "answer": "(a) 20.4 mm (the hole grows too)",
+    "origin": "human",
+    "type": "calc",
+    "title": "Heated Washer and Thermal Stress",
+    "topic": "Thermal expansion",
+    "difficulty": "medium",
+    "prompt": "A steel washer has ID 20 mm and OD 40 mm. It is heated uniformly and the OD grows to 40.8 mm (×1.02). (a) What is the new ID? (b) Now suppose instead the inner edge is hot and the outer edge stays cold. Describe the stress state.",
+    "solution": "(a) Uniform heating scales every dimension by the same 1 + αΔT, holes included: ID = 20 × 1.02 = 20.4 mm. The hole behaves like the missing material would. (For steel, 2% would take ΔT ≈ 1670 K, so it's purely illustrative.)\n(b) The hot inner region wants to grow but the cold rim holds it back. The inner region is in hoop compression, the cold outer rim is stretched into hoop tension, and radial stress is compressive in between and zero at the free ID and OD. Cracks start at the cold, tensile outer edge, which is why hot-centered glass and brake discs crack from the rim.",
+    "tags": [
+      "thermal expansion",
+      "thermal stress",
+      "from-notes"
+    ]
   }
 ]

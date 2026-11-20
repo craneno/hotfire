@@ -9,7 +9,11 @@
     "answer": "F = ṁV_e + (P_e − P_a)A_e. Maximum at P_e = P_a.",
     "solution": "From conservation of momentum: ṁV_e is momentum thrust and (P_e − P_a)A_e is pressure thrust. Underexpanded (P_e > P_a): extending the nozzle would turn that excess pressure into velocity more efficiently than it pushes on the exit plane, so you leave thrust on the table. Overexpanded (P_e < P_a): the extra bell area has pressure below ambient pushing against you, and severe cases cause flow separation. dF/dA_e = 0 exactly at P_e = P_a.",
     "keyPoints": [],
-    "tags": ["thrust equation", "expansion", "from-notes"],
+    "tags": [
+      "thrust equation",
+      "expansion",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -28,7 +32,12 @@
       "Propellant change mainly moves c*; altitude only moves Cf",
       "Isp vs density tradeoff (LOX/H₂ vs LOX/CH₄)"
     ],
-    "tags": ["isp", "c*", "cf", "from-notes"],
+    "tags": [
+      "isp",
+      "c*",
+      "cf",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -41,7 +50,11 @@
     "answer": "≈ 1.80",
     "solution": "Cf_vac = Cf_amb + P_a·A_e/(P_c·A_t) = 1.60 + 101,325 × 20 / 10×10⁶ = 1.60 + 0.203 ≈ 1.80.\nThe ambient term is back-pressure on the exit area, which disappears in vacuum. Isp rises by the same 13%.",
     "keyPoints": [],
-    "tags": ["cf", "vacuum", "from-notes"],
+    "tags": [
+      "cf",
+      "vacuum",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -54,7 +67,11 @@
     "answer": "≈ 3980 m/s",
     "solution": "V_e,max = √[(2γ/(γ−1)) · (R_u/M) · T_c] = √[12 × (8314/22) × 3500] ≈ 3984 m/s.\nReaching it would take an infinite expansion ratio and an isentropic nozzle. Real nozzles are finite and lose to friction, divergence, heat transfer and incomplete recombination.",
     "keyPoints": [],
-    "tags": ["exhaust velocity", "thermochemistry", "from-notes"],
+    "tags": [
+      "exhaust velocity",
+      "thermochemistry",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -73,7 +90,11 @@
       "Cooler running is a side benefit",
       "Thrust = ṁV_e: flow rate sets thrust, Isp sets efficiency"
     ],
-    "tags": ["thermochemistry", "mixture ratio", "from-notes"],
+    "tags": [
+      "thermochemistry",
+      "mixture ratio",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -92,7 +113,11 @@
       "Graphite erodes or oxidizes, so the throat area grows",
       "Choice follows cooling approach and burn duration"
     ],
-    "tags": ["materials", "nozzle", "from-notes"],
+    "tags": [
+      "materials",
+      "nozzle",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -111,7 +136,85 @@
       "M < 1: velocity dominates; M > 1: density drop dominates",
       "Choked throat at M = 1"
     ],
-    "tags": ["nozzle", "compressible", "derivation", "from-notes"],
+    "tags": [
+      "nozzle",
+      "compressible",
+      "derivation",
+      "from-notes"
+    ],
     "origin": "human"
+  },
+  {
+    "area": "combustion-devices",
+    "keyPoints": [
+      "Unlike: intimate mixing, high c* efficiency, fewer elements",
+      "Unlike: alignment and momentum-ratio sensitive, face heating, hypergol blow-apart",
+      "Like: tolerant, stable, flame off the face",
+      "Like: weaker mixing unless fans interleave",
+      "Pick by priority: performance vs robustness and stability"
+    ],
+    "answer": "",
+    "origin": "human",
+    "type": "interview",
+    "title": "Like-on-Like vs Unlike Doublets",
+    "topic": "Injector design",
+    "difficulty": "medium",
+    "prompt": "Why would you choose like-on-like doublets over unlike (fuel-on-oxidizer) doublets in an impinging injector, or the reverse? Give pros and cons of both.",
+    "solution": "Unlike doublets impinge fuel directly on oxidizer, so mixing is intimate and c* efficiency is high with few elements. But they're sensitive to orifice alignment and momentum ratio (mixture-ratio maldistribution), they react close to the face (face heating), they're more prone to high-frequency instability, and hypergols can \"blow apart\" at the impingement point. Like-on-like doublets impinge fuel on fuel and ox on ox, making two fans that mix downstream. That's more tolerant of misalignment and momentum mismatch, keeps the flame off the face, and is generally more stable. The cost is less complete mixing (lower c* efficiency) unless the fans interleave well, and usually more elements.",
+    "tags": [
+      "injector",
+      "impinging",
+      "stability",
+      "from-notes"
+    ]
+  },
+  {
+    "area": "combustion-devices",
+    "keyPoints": [
+      "GG dumps turbine flow at low Isp",
+      "More P_c means more dumped flow: a ceiling",
+      "FFSC: all flow ends up in the main chamber",
+      "Big turbine flow: power at low temperature, so high P_c",
+      "High P_c: more expansion, smaller engine, gas-gas mixing"
+    ],
+    "answer": "",
+    "origin": "human",
+    "type": "interview",
+    "title": "FFSC vs Gas Generator Performance",
+    "topic": "Engine cycles",
+    "difficulty": "medium",
+    "prompt": "Full-flow staged combustion is far more complex than a gas generator cycle. Why can it actually deliver more performance?",
+    "solution": "In a gas generator cycle, the turbine drive gas (a few percent of total flow) is burned fuel-rich at a low, turbine-safe temperature and dumped overboard at low velocity. Every kilogram of it contributes almost no Isp. Raising P_c needs more turbine power, which means more dumped flow, so GG engines hit a P_c ceiling. In FFSC all the propellant goes through the preburners and turbines and then into the main chamber, so nothing is dumped. The huge turbine flow gives lots of power at modest temperature, which allows much higher P_c. That buys a higher expansion ratio for the same exit size, better sea-level Isp, a smaller and lighter engine, and gas-gas injection with high c* efficiency.",
+    "tags": [
+      "engine cycle",
+      "ffsc",
+      "gas generator",
+      "from-notes"
+    ]
+  },
+  {
+    "area": "combustion-devices",
+    "keyPoints": [
+      "Turbine power limited to regen heat pickup",
+      "Required power scales with flow; heated area grows slower",
+      "Caps thrust and chamber pressure",
+      "Needs H₂/CH₄; RP-1 cokes",
+      "Fixes: more heated area, bleed expander",
+      "Pros: benign turbine temperature, restartable, reliable"
+    ],
+    "answer": "",
+    "origin": "human",
+    "type": "interview",
+    "title": "Expander Cycle Limits",
+    "topic": "Engine cycles",
+    "difficulty": "hard",
+    "prompt": "Explain the limitations of the expander cycle, including the square-cube argument for why expanders top out at modest thrust.",
+    "solution": "In an expander, the only turbine energy is heat the fuel picks up in the regen jacket. Pump power scales with propellant flow (and P_c), and flow scales with throat area. Heated wall area grows more slowly, because for a fixed L* the chamber gets relatively shorter as it scales up. Heat available therefore falls behind the power required: square-cube in spirit. That caps thrust (RL10 and Vinci are on the order of 100–200 kN) and P_c. The fuel also has to absorb lots of heat and stay a clean gas, so hydrogen is ideal, methane works, and RP-1 doesn't (it cokes). The workarounds are longer or ribbed chambers, nozzle heat pickup, or a bleed (open) expander that dumps turbine flow at an Isp cost. Upsides: cool turbine gas, very reliable, easy restart.",
+    "tags": [
+      "engine cycle",
+      "expander",
+      "scaling",
+      "from-notes"
+    ]
   }
 ]

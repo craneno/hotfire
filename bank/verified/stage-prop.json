@@ -9,7 +9,11 @@
     "answer": "≈ 7680 m/s",
     "solution": "Δv = V_e·ln(m₀/m_f) = Isp·g₀·ln(m₀/m_f). It comes from conservation of momentum, ignoring gravity and drag losses.\nΔv = 340 × 9.807 × ln 10 ≈ 7677 m/s.\nThe log means mass ratio, which follows from propellant mass fraction, has diminishing returns. That's why staging exists.",
     "keyPoints": [],
-    "tags": ["rocket equation", "delta-v", "from-notes"],
+    "tags": [
+      "rocket equation",
+      "delta-v",
+      "from-notes"
+    ],
     "origin": "human"
   },
   {
@@ -28,7 +32,11 @@
       "Tank P = P_c + injector ΔP + line losses − head",
       "C_d changes, cavitation, cryogenic and two-phase effects"
     ],
-    "tags": ["waterflow", "injector", "specter", "interview"],
+    "tags": [
+      "waterflow",
+      "injector",
+      "interview"
+    ],
     "origin": "human"
   },
   {
@@ -48,7 +56,11 @@
       "Insulate to stay single-phase; thermal contraction",
       "Constant V: constant area, branch areas sum"
     ],
-    "tags": ["lox", "pressure drop", "blue origin", "interview"],
+    "tags": [
+      "lox",
+      "pressure drop",
+      "interview"
+    ],
     "origin": "human"
   }
 ]
