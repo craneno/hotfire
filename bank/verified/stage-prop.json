@@ -1,0 +1,54 @@
+[
+  {
+    "area": "stage-prop",
+    "type": "calc",
+    "title": "Rocket Equation Delta-V",
+    "topic": "Vehicle performance",
+    "difficulty": "easy",
+    "prompt": "State the rocket equation and where it comes from. A stage has Isp = 340 s and a mass ratio m₀/m_f = 10. What is its ideal Δv, in m/s?",
+    "answer": "≈ 7680 m/s",
+    "solution": "Δv = V_e·ln(m₀/m_f) = Isp·g₀·ln(m₀/m_f). It comes from conservation of momentum, ignoring gravity and drag losses.\nΔv = 340 × 9.807 × ln 10 ≈ 7677 m/s.\nThe log means mass ratio, which follows from propellant mass fraction, has diminishing returns. That's why staging exists.",
+    "keyPoints": [],
+    "tags": ["rocket equation", "delta-v", "from-notes"],
+    "origin": "human"
+  },
+  {
+    "area": "stage-prop",
+    "type": "interview",
+    "title": "Waterflow to Hot Fire Tank Pressure",
+    "topic": "Feed system",
+    "difficulty": "hard",
+    "prompt": "You waterflowed an injector and feed system to hit a target mass flow. How do the tank pressures need to change for hot fire to get the same mass flow with real propellants?",
+    "answer": "",
+    "solution": "For incompressible flow ṁ = C_d·A·√(2ρΔP), so at the same ṁ, ΔP ∝ 1/ρ. Every water ΔP scales by ρ_water/ρ_prop: LOX (1141 kg/m³) needs about 0.88× the ΔP, RP-1 (≈810) about 1.23×, liquid methane (≈422) about 2.37×. Waterflow usually discharges to atmosphere, but in hot fire the injector discharges into P_c, so tank pressure ≈ P_c + injector ΔP + line losses − hydrostatic head. Also check that C_d still holds (cavitation, Reynolds number, temperature), keep NPSP margin for cryogens, and account for chill-down and two-phase flow at start.",
+    "keyPoints": [
+      "ṁ = C_d·A·√(2ρΔP), so ΔP ∝ 1/ρ at fixed ṁ",
+      "Scale each ΔP by density ratio (LOX less, CH₄ much more)",
+      "Back-pressure becomes P_c instead of ambient",
+      "Tank P = P_c + injector ΔP + line losses − head",
+      "C_d changes, cavitation, cryogenic and two-phase effects"
+    ],
+    "tags": ["waterflow", "injector", "specter", "interview"],
+    "origin": "human"
+  },
+  {
+    "area": "stage-prop",
+    "type": "interview",
+    "title": "Spec a LOX Delivery Line",
+    "topic": "Feed system",
+    "difficulty": "medium",
+    "prompt": "How would you spec a pipe for LOX delivery? What are the biggest levers to lower pressure drop? What if you need constant velocity along the line?",
+    "answer": "",
+    "solution": "Start from requirements: ṁ, allowable ΔP, pressures (MAWP plus surge), length and routing. Darcy: ΔP = f·(L/D)·ρV²/2, and at fixed ṁ, V ∝ 1/D², so ΔP ∝ 1/D⁵. Diameter is by far the biggest lever: +10% D gives about −38% ΔP. Next come length, the number of bends and fittings (K-factors), smooth bore and avoiding area changes. LOX specifics: oxygen-compatible materials (300-series SS, Inconel, Monel), oxygen cleanliness, velocity limits for particle-impact ignition, insulation or a vacuum jacket so it doesn't boil (two-phase flow inflates ΔP), chill-down, and bellows or loops for thermal contraction. Constant velocity for a liquid means constant flow area, and at branches the downstream areas must sum to the upstream area.",
+    "keyPoints": [
+      "Requirements: ṁ, ΔP budget, MAWP and surge",
+      "ΔP ∝ 1/D⁵ at fixed ṁ; diameter dominates",
+      "Length, fittings, roughness",
+      "O₂ compatibility, cleanliness, velocity limits",
+      "Insulate to stay single-phase; thermal contraction",
+      "Constant V: constant area, branch areas sum"
+    ],
+    "tags": ["lox", "pressure drop", "blue origin", "interview"],
+    "origin": "human"
+  }
+]

@@ -5,9 +5,10 @@ export const AREAS = [
   { id: "stage-prop", label: "Stage Propulsion", short: "PROP", emoji: "🛢️" },
   { id: "combustion-devices", label: "Combustion Devices", short: "CD", emoji: "🔥" },
   { id: "battery-pack", label: "Battery Pack", short: "BATT", emoji: "🔋" },
+  { id: "fundamentals", label: "Core Fundamentals", short: "FUND", emoji: "📐" },
 ] as const;
 
-export const AreaId = z.enum(["manufacturing", "stage-prop", "combustion-devices", "battery-pack"]);
+export const AreaId = z.enum(["manufacturing", "stage-prop", "combustion-devices", "battery-pack", "fundamentals"]);
 export type AreaId = z.infer<typeof AreaId>;
 
 export const Difficulty = z.enum(["easy", "medium", "hard"]);
@@ -72,7 +73,7 @@ export type Progress = {
 };
 
 export const DEFAULT_SETTINGS: Settings = {
-  focusAreas: ["manufacturing", "stage-prop", "combustion-devices", "battery-pack"],
+  focusAreas: ["manufacturing", "stage-prop", "combustion-devices", "battery-pack", "fundamentals"],
   dailyGoalXp: 60,
   sessionLength: 10,
   verifiedOnly: false,

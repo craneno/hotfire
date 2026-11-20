@@ -18,6 +18,7 @@
   --prop: #38bdf8;
   --cd: #ff7a1a;
   --batt: #4ade80;
+  --fund: #f472b6;
   --radius: 14px;
   color-scheme: dark;
 }
@@ -102,6 +103,7 @@ main > .banner, body > .banner { max-width: 940px; margin: 12px auto; }
 .badge.area-stage-prop { color: var(--prop); }
 .badge.area-combustion-devices { color: var(--cd); }
 .badge.area-battery-pack { color: var(--batt); }
+.badge.area-fundamentals { color: var(--fund); }
 .diff { font-size: 13px; font-weight: 700; }
 .diff-easy { color: #2dd4bf; }
 .diff-medium { color: var(--meh); }
@@ -133,7 +135,7 @@ main > .banner, body > .banner { max-width: 940px; margin: 12px auto; }
 .bar.hit { background: var(--accent); }
 .bar-wrap small { font-size: 10px; color: var(--muted); }
 
-.areas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.areas { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
 .area-card {
   text-align: left; background: var(--panel); color: var(--text);
   border: 2px solid var(--line); border-bottom-width: 4px; border-radius: var(--radius);
@@ -145,6 +147,7 @@ main > .banner, body > .banner { max-width: 940px; margin: 12px auto; }
 .area-card.on.area-stage-prop { border-color: var(--prop); }
 .area-card.on.area-combustion-devices { border-color: var(--cd); }
 .area-card.on.area-battery-pack { border-color: var(--batt); }
+.area-card.on.area-fundamentals { border-color: var(--fund); }
 .area-head { display: flex; justify-content: space-between; font-size: 24px; }
 .area-head .check { font-size: 16px; font-weight: 800; }
 .area-name { font-weight: 800; margin: 6px 0 10px; }
@@ -154,6 +157,7 @@ main > .banner, body > .banner { max-width: 940px; margin: 12px auto; }
 .area-card.area-stage-prop .meter { color: var(--prop); }
 .area-card.area-combustion-devices .meter { color: var(--cd); }
 .area-card.area-battery-pack .meter { color: var(--batt); }
+.area-card.area-fundamentals .meter { color: var(--fund); }
 
 .settings { display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
 
@@ -229,7 +233,6 @@ summary { cursor: pointer; color: var(--blue); font-weight: 600; }
 @media (max-width: 760px) {
   .topbar { flex-wrap: wrap; gap: 10px; padding: 10px 14px; }
   .hero { grid-template-columns: 1fr; }
-  .areas { grid-template-columns: repeat(2, 1fr); }
   main { padding: 16px 14px 60px; }
   .ptable th:nth-child(4), .ptable td:nth-child(4), .ptable th:nth-child(6), .ptable td:nth-child(6) { display: none; }
 }

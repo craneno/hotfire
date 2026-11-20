@@ -2,7 +2,7 @@
 
 Interview drills for mechanical engineers going after SpaceX-style hardware roles. It mixes Duolingo-style daily sessions (streaks, XP, daily goal) with a LeetCode-style problem list.
 
-Focus areas: **Manufacturing / Build**, **Stage Propulsion**, **Combustion Devices**, **Battery Pack**.
+Focus areas: **Manufacturing / Build**, **Stage Propulsion**, **Combustion Devices**, **Battery Pack**, **Core Fundamentals**.
 
 Nothing is graded. You write your answer, click **Done**, and see your answer next to the solution. The app runs fully offline with no API calls. AI is used only to write questions and solutions into the bank ahead of time.
 

@@ -1,0 +1,117 @@
+[
+  {
+    "area": "combustion-devices",
+    "type": "concept",
+    "title": "Thrust Equation and Ideal Expansion",
+    "topic": "Nozzle performance",
+    "difficulty": "medium",
+    "prompt": "Write the rocket thrust equation and explain each term. For a fixed chamber and throat, why is thrust highest when the nozzle is perfectly expanded (P_e = P_a)?",
+    "answer": "F = ṁV_e + (P_e − P_a)A_e. Maximum at P_e = P_a.",
+    "solution": "From conservation of momentum: ṁV_e is momentum thrust and (P_e − P_a)A_e is pressure thrust. Underexpanded (P_e > P_a): extending the nozzle would turn that excess pressure into velocity more efficiently than it pushes on the exit plane, so you leave thrust on the table. Overexpanded (P_e < P_a): the extra bell area has pressure below ambient pushing against you, and severe cases cause flow separation. dF/dA_e = 0 exactly at P_e = P_a.",
+    "keyPoints": [],
+    "tags": ["thrust equation", "expansion", "from-notes"],
+    "origin": "human"
+  },
+  {
+    "area": "combustion-devices",
+    "type": "interview",
+    "title": "Isp, c* and Cf Explained",
+    "topic": "Performance parameters",
+    "difficulty": "medium",
+    "prompt": "Define Isp, c* and Cf and how they relate. How does each change when you change propellants, and when you go from sea level to vacuum?",
+    "answer": "",
+    "solution": "Isp = F/(ṁg₀) = V_e/g₀ = c*·Cf/g₀, in seconds: how long 1 kg of propellant can produce thrust equal to its own weight. c* = P_c·A_t/ṁ is \"combustion efficiency\": the chamber pressure a given flow makes through a given throat. It depends only on propellant thermochemistry, roughly √(T_c/M) and γ. Cf = F/(P_c·A_t) is \"nozzle efficiency\": how much the nozzle multiplies the throat pressure force. It depends on expansion ratio, γ and ambient pressure. Changing propellant changes c*: LOX/CH₄ is about 330 s at sea level, LOX/H₂ about 450 s in vacuum thanks to low molecular weight, but H₂'s low density means big tanks. Changing atmosphere only changes Cf: Cf_vac = Cf_amb + P_a·A_e/(P_c·A_t). Real Cf is about 0.98 of ideal.",
+    "keyPoints": [
+      "Isp = F/(ṁg₀) = c*·Cf/g₀",
+      "c* = P_c·A_t/ṁ, set by propellant (T_c, M, γ)",
+      "Cf = F/(P_c·A_t), set by nozzle and ambient pressure",
+      "Propellant change mainly moves c*; altitude only moves Cf",
+      "Isp vs density tradeoff (LOX/H₂ vs LOX/CH₄)"
+    ],
+    "tags": ["isp", "c*", "cf", "from-notes"],
+    "origin": "human"
+  },
+  {
+    "area": "combustion-devices",
+    "type": "calc",
+    "title": "Vacuum Thrust Coefficient",
+    "topic": "Performance parameters",
+    "difficulty": "medium",
+    "prompt": "An engine has a sea-level thrust coefficient Cf = 1.60. Chamber pressure is 10 MPa and the expansion ratio A_e/A_t = 20. Taking P_a = 101,325 Pa, what is its vacuum thrust coefficient?",
+    "answer": "≈ 1.80",
+    "solution": "Cf_vac = Cf_amb + P_a·A_e/(P_c·A_t) = 1.60 + 101,325 × 20 / 10×10⁶ = 1.60 + 0.203 ≈ 1.80.\nThe ambient term is back-pressure on the exit area, which disappears in vacuum. Isp rises by the same 13%.",
+    "keyPoints": [],
+    "tags": ["cf", "vacuum", "from-notes"],
+    "origin": "human"
+  },
+  {
+    "area": "combustion-devices",
+    "type": "calc",
+    "title": "Maximum Exhaust Velocity",
+    "topic": "Thermochemistry",
+    "difficulty": "medium",
+    "prompt": "Combustion products have chamber temperature 3500 K, mean molecular weight 22 kg/kmol and γ = 1.2. What is the theoretical maximum exhaust velocity (infinite expansion to vacuum, P_e = 0), in m/s? Why can a real nozzle never reach it?",
+    "answer": "≈ 3980 m/s",
+    "solution": "V_e,max = √[(2γ/(γ−1)) · (R_u/M) · T_c] = √[12 × (8314/22) × 3500] ≈ 3984 m/s.\nReaching it would take an infinite expansion ratio and an isentropic nozzle. Real nozzles are finite and lose to friction, divergence, heat transfer and incomplete recombination.",
+    "keyPoints": [],
+    "tags": ["exhaust velocity", "thermochemistry", "from-notes"],
+    "origin": "human"
+  },
+  {
+    "area": "combustion-devices",
+    "type": "interview",
+    "title": "Combustion Products and Isp",
+    "topic": "Thermochemistry",
+    "difficulty": "medium",
+    "prompt": "How do the properties of the combustion products relate to thrust and Isp? Why do LOX/H₂ engines run fuel-rich instead of at stoichiometric?",
+    "answer": "",
+    "solution": "V_e ∝ √(T_c/M), so Isp rises with flame temperature and falls with product molecular weight, and lower γ helps a little. Products set c*, and therefore Isp. LOX/H₂ runs at a mixture ratio of about 5–6 instead of stoichiometric 8 because the excess H₂ sharply lowers the mean molecular weight. That gains more than the small drop in T_c costs, and it also eases wall and turbine temperatures. Thrust itself is ṁV_e, so at fixed Isp you get thrust by moving more mass.",
+    "keyPoints": [
+      "V_e ∝ √(T_c/M); γ is secondary",
+      "Product properties set c*",
+      "Fuel-rich H₂: lower M beats lower T_c",
+      "Cooler running is a side benefit",
+      "Thrust = ṁV_e: flow rate sets thrust, Isp sets efficiency"
+    ],
+    "tags": ["thermochemistry", "mixture ratio", "from-notes"],
+    "origin": "human"
+  },
+  {
+    "area": "combustion-devices",
+    "type": "interview",
+    "title": "Graphite vs Copper Throat",
+    "topic": "Materials",
+    "difficulty": "medium",
+    "prompt": "Why would you use a graphite nozzle throat insert in one engine and a copper throat in another?",
+    "answer": "",
+    "solution": "Copper melts at 1085 °C but conducts heat extremely well (about 400 W/m·K), so it only works when actively cooled: a regen liner (GRCop, C-18150) moves throat heat flux into the coolant and runs indefinitely. A solid copper heat-sink chamber only survives seconds. Graphite (or carbon-carbon) survives uncooled at around 3000 °C, gets stronger with temperature, is light and handles thermal shock. It's used in solid motors and uncooled or ablative engines. Its weakness is oxidation and erosion by H₂O, CO₂ and oxidizer-rich gas, so A_t grows during the burn, which changes P_c and performance.",
+    "keyPoints": [
+      "Copper: very high k, low melting point, so it must be regen-cooled",
+      "Copper heat-sink chambers are for short tests only",
+      "Graphite: uncooled, very high temperature, strengthens when hot",
+      "Graphite erodes or oxidizes, so the throat area grows",
+      "Choice follows cooling approach and burn duration"
+    ],
+    "tags": ["materials", "nozzle", "from-notes"],
+    "origin": "human"
+  },
+  {
+    "area": "combustion-devices",
+    "type": "interview",
+    "title": "Why Nozzles Diverge",
+    "topic": "Compressible flow",
+    "difficulty": "hard",
+    "prompt": "Why does a diverging section accelerate supersonic flow but decelerate subsonic flow? Derive the area-velocity relation.",
+    "answer": "dA/A = (M² − 1)·dV/V",
+    "solution": "Continuity ṁ = ρAV gives dρ/ρ + dA/A + dV/V = 0. Momentum: dP = −ρV·dV. Speed of sound: dP = a²·dρ. Combining gives dρ/ρ = −M²·dV/V, so dA/A = (M² − 1)·dV/V. Subsonic (M < 1): density barely changes, so to speed up the area must shrink, like water in a hose. Supersonic (M > 1): density drops faster than velocity rises, so the area must grow to pass the same mass flow. Hence converging to M = 1 at the throat, then diverging.",
+    "keyPoints": [
+      "Continuity in log-differential form",
+      "Momentum dP = −ρVdV and dP = a²dρ",
+      "dA/A = (M² − 1)dV/V",
+      "M < 1: velocity dominates; M > 1: density drop dominates",
+      "Choked throat at M = 1"
+    ],
+    "tags": ["nozzle", "compressible", "derivation", "from-notes"],
+    "origin": "human"
+  }
+]

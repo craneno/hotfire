@@ -6,7 +6,7 @@ Interview drills for mechanical engineers targeting SpaceX-style hardware roles.
 
 When asked to generate questions, append them to `bank/ai/<area>.json`. Never write to `bank/verified/`: the user verifies AI questions in the app's Review page, and only that moves them across.
 
-Areas: `manufacturing`, `stage-prop`, `combustion-devices`, `battery-pack`. Each file is a JSON array of:
+Areas: `manufacturing`, `stage-prop`, `combustion-devices`, `battery-pack`, `fundamentals` (core ME: mechanics of materials, heat transfer, fluids, thermo, dynamics, plus behavioral). Each file is a JSON array of:
 
 ```json
 {
