@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AREAS, type AreaId, type QuestionInput } from "../../shared/schema.ts";
 import { api } from "../api.ts";
 import { useStore } from "../App.tsx";
+import { KeyHint } from "../components/KeyHint.tsx";
 import { QuestionEditor } from "../components/QuestionEditor.tsx";
 
 type Draft = { key: number; question: QuestionInput; inferred: string };
@@ -84,7 +85,7 @@ function ImportNotes() {
   if (!ai.configured)
     return (
       <div className="banner warn">
-        Importing from free-form notes uses Claude to structure them. Add <code>ANTHROPIC_API_KEY</code> to <code>.env</code>{" "}
+        Importing from free-form notes uses the AI model to structure them. Add <KeyHint /> to <code>.env</code>{" "}
         and restart <code>npm run dev</code>. Or write questions one at a time, or edit the JSON files directly.
       </div>
     );

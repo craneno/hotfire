@@ -11,6 +11,7 @@ try {
 }
 
 const { AiError, generateQuestions, gradeOpenAnswer, importQuestions } = await import("./ai.ts");
+const { aiConfig } = await import("./llm.ts");
 const { addQuestions, approveQuestion, deleteQuestion, loadBank, NotFound, updateQuestion } = await import("./bank.ts");
 const { loadProgress, saveProgress } = await import("./progress.ts");
 const { AreaId, Difficulty, QuestionInput, QuestionType, DEFAULT_SETTINGS } = await import("../shared/schema.ts");
@@ -83,8 +84,7 @@ api.post("/progress/reset", (_req, res) => {
 });
 
 api.get("/ai/status", (_req, res) => {
-  const configured = !!(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN || process.env.ANTHROPIC_PROFILE);
-  res.json({ configured, model: process.env.HOTFIRE_MODEL ?? "claude-opus-5-5" });
+  res.json(aiConfig());
 });
 
 api.post("/ai/generate", async (req, res) => {
@@ -139,5 +139,7 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
 const port = Number(process.env.PORT ?? 8787);
 app.listen(port, () => {
   const prod = process.env.NODE_ENV === "production";
+  const ai = aiConfig();
   console.log(`hotfire api on http://localhost:${port}${prod ? "" : "  (open the web app at http://localhost:5173)"}`);
+  console.log(`AI: ${ai.provider} / ${ai.model}${ai.configured ? "" : "  (no API key: AI features disabled)"}`);
 });

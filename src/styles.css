@@ -61,6 +61,7 @@ h4 { margin: 14px 0 6px; font-size: 13px; text-transform: uppercase; letter-spac
 .streak { color: var(--muted); filter: grayscale(1); }
 .streak.on { color: var(--accent); filter: none; }
 .xp { color: var(--meh); }
+.stats .model { font-weight: 600; align-self: center; }
 
 main { max-width: 980px; margin: 0 auto; padding: 24px 20px 80px; }
 

@@ -1,5 +1,3 @@
-import Anthropic from "@anthropic-ai/sdk";
-import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
 import {
   AREAS,
@@ -11,24 +9,9 @@ import {
   type GradeResult,
   type Question,
 } from "../shared/schema.ts";
+import { AiError, structured as call } from "./llm.ts";
 
-const MODEL = process.env.HOTFIRE_MODEL ?? "claude-opus-5-5";
-
-let client: Anthropic | null = null;
-function getClient() {
-  // Resolves ANTHROPIC_API_KEY / ANTHROPIC_AUTH_TOKEN / `ant auth login` profile.
-  client ??= new Anthropic();
-  return client;
-}
-
-export class AiError extends Error {
-  constructor(
-    message: string,
-    public status = 502,
-  ) {
-    super(message);
-  }
-}
+export { AiError };
 
 /* -------- Shared prompt context -------- */
 
@@ -43,18 +26,27 @@ const AREA_SCOPE: Record<AreaId, string> = {
     "cell chemistry and format selection (NMC, NCA, LFP; cylindrical, prismatic, pouch); series/parallel architecture, voltage and capacity sizing; busbars, interconnects, laser welds and wire bonds, fusing; I²R heating and thermal management (cold plates, coolant, interface materials); thermal runaway, propagation barriers and venting; BMS (cell balancing, SoC/SoH estimation, contactors, precharge, isolation monitoring); HV safety; structural design (vibration, shock, potting, enclosure); aging and degradation (lithium plating, calendar/cycle); pack test and qualification; pack manufacturing.",
 };
 
+/** Appended to every system prompt: the user wants short, dense output. */
+const CONCISE = `Be very concise. Every word should earn its place: no preamble, no filler, no restating the question.
+- explanation: at most 3 short sentences plus the key equation(s) with numbers.
+- modelAnswer: at most ~100 words, the way a sharp candidate would say it.
+- rubric points and choices: at most ~12 words each.
+- feedback: at most 2 sentences. followUp: one sentence.`;
+
 const AUTHOR_SYSTEM = `You write interview practice questions for mechanical engineers preparing for hardware roles at fast-moving launch-vehicle and spacecraft companies (SpaceX-style interviews: first-principles reasoning, hand calcs on a whiteboard, responsible-engineer ownership, build-test-fly-iterate, anomaly investigations).
 
 Question types:
 - "numeric": a hand calc with a single unambiguous answer. Give every value and constant needed in the prompt and state simplifying assumptions. Work the problem carefully, then re-check the arithmetic before writing "answer". Put the full derivation with intermediate numbers in "explanation". "unit" is the unit the answer is expressed in, and the prompt must ask for that unit. "tolerancePct" is usually 1-3; use larger only when reasonable rounding of inputs justifies it, and 0 only for integer counts.
 - "mcq": exactly 4 choices, one clearly correct; distractors should be misconceptions a real candidate might hold, not throwaways. Vary which position is correct. "answerIndex" is 0-based.
-- "open": the kind of question an interviewer asks out loud: debug an anomaly, defend a design tradeoff, walk through how you'd build or test something. "rubric" lists 4-7 concrete, checkable points a strong answer hits. "modelAnswer" is what a strong candidate would say in about two minutes, written in first person and plain language.
+- "open": the kind of question an interviewer asks out loud: debug an anomaly, defend a design tradeoff, walk through how you'd build or test something. "rubric" lists 4-7 concrete, checkable points a strong answer hits. "modelAnswer" is what a strong candidate would say, first person, plain language.
 
 Every question: "title" is a short LeetCode-style name (2-6 words). "topic" is a short sub-topic label. "explanation" teaches the underlying principle, not just the answer. "tags" are 1-4 lowercase keywords.
 
 Fields that don't apply to a question's type: use [] for arrays, null for numbers, "" for strings.
 
-Accuracy is the priority. Use textbook and public-domain numbers; never invent proprietary data about specific companies or vehicles. If a question can't be made unambiguous, write a different one.`;
+Accuracy is the priority. Use textbook and public-domain numbers; never invent proprietary data about specific companies or vehicles. If a question can't be made unambiguous, write a different one.
+
+${CONCISE}`;
 
 /* -------- Flat schema for structured output, normalized after -------- */
 
@@ -100,45 +92,6 @@ function normalize(g: GenQuestion, area: AreaId, origin: "human" | "ai") {
 function exemplar(q: Question) {
   const { id: _i, verified: _v, createdAt: _c, origin: _o, ...rest } = q;
   return rest;
-}
-
-type ParsedOrThrow<T> = { parsed_output: T | null; stop_reason: string | null; stop_details?: unknown };
-
-function unwrap<T>(msg: ParsedOrThrow<T>): T {
-  if (msg.stop_reason === "refusal") throw new AiError("The model declined this request.", 422);
-  if (msg.stop_reason === "max_tokens") throw new AiError("Response was cut off (max_tokens). Try fewer questions.");
-  if (!msg.parsed_output) throw new AiError("Model returned output that didn't match the schema.");
-  return msg.parsed_output;
-}
-
-async function call<T>(opts: {
-  system: string;
-  user: string;
-  schema: z.ZodType<T>;
-  effort: "low" | "medium" | "high";
-}): Promise<T> {
-  try {
-    const stream = getClient().beta.messages.stream({
-      model: MODEL,
-      max_tokens: 64000,
-      betas: ["server-side-fallback-2026-07-01"],
-      fallbacks: "default",
-      output_config: { effort: opts.effort, format: betaZodOutputFormat(opts.schema) },
-      system: opts.system,
-      messages: [{ role: "user", content: opts.user }],
-    });
-    return unwrap(await stream.finalMessage());
-  } catch (e) {
-    if (e instanceof AiError) throw e;
-    if (e instanceof Anthropic.AuthenticationError || e instanceof Anthropic.PermissionDeniedError)
-      throw new AiError("Anthropic credentials missing or invalid. Set ANTHROPIC_API_KEY in .env.", 401);
-    if (e instanceof Anthropic.RateLimitError) throw new AiError("Rate limited by the Anthropic API. Retry shortly.", 429);
-    if (e instanceof Anthropic.APIError) throw new AiError(`Anthropic API error ${e.status}: ${e.message}`);
-    // Thrown by the client constructor/request when no credential can be resolved.
-    if (e instanceof Anthropic.AnthropicError)
-      throw new AiError(`AI unavailable: ${e.message}. Set ANTHROPIC_API_KEY in .env.`, 401);
-    throw e;
-  }
 }
 
 /* -------- Generate -------- */
@@ -231,7 +184,9 @@ const GRADER_SYSTEM = `You grade a candidate's answer to a mechanical engineerin
 
 Grade against the rubric. Credit correct reasoning that reaches a rubric point in different words. Penalize physics or engineering claims that are wrong, especially when stated confidently; an interviewer would. Don't credit vague hand-waving ("I'd look into it") as hitting a specific point.
 
-score is 0-100. verdict: "correct" for 75+, "partial" for 40-74, "wrong" below 40. hits and misses quote rubric points (shortened is fine). feedback is 2-4 sentences addressed to the candidate: what was strong, the most important gap, and any incorrect claim. followUp is the next question a sharp interviewer would ask given this answer.`;
+score is 0-100. verdict: "correct" for 75+, "partial" for 40-74, "wrong" below 40. hits and misses quote rubric points (shortened is fine). feedback is addressed to the candidate: the most important gap and any incorrect claim. followUp is the next question a sharp interviewer would ask given this answer.
+
+${CONCISE}`;
 
 const Grade = z.object({
   score: z.number(),

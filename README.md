@@ -8,13 +8,13 @@ Question types:
 
 - **Hand calc**: numeric answer with a unit and a ± tolerance
 - **Multiple choice**
-- **Interview answer**: open-ended. You type the answer you'd give out loud, then either Claude grades it against a rubric (score, what you hit and missed, and the follow-up an interviewer would ask) or you self-grade against the model answer.
+- **Interview answer**: open-ended. You type the answer you'd give out loud, then either the AI model grades it against a rubric (score, what you hit and missed, and the follow-up an interviewer would ask) or you self-grade against the model answer.
 
 ## Run it
 
 ```bash
 npm install
-cp .env.example .env    # add ANTHROPIC_API_KEY to turn on the AI features
+cp .env.example .env    # add GEMINI_API_KEY to turn on the AI features
 npm run dev             # API on :8787, app on http://localhost:5173
 ```
 
@@ -37,7 +37,7 @@ Each file is a JSON array. File names don't matter (`<area>.json` is the convent
 There are three ways to add questions, all of which land in `bank/verified/`:
 
 1. **Add → Write one**: a form for a single question.
-2. **Add → Import from notes**: paste questions in any format (doc, list, interview notes). Claude structures them, keeps your wording, fills in missing answers, rubrics and explanations, and flags what it inferred. You review each draft before it's saved.
+2. **Add → Import from notes**: paste questions in any format (doc, list, interview notes). the AI model structures them, keeps your wording, fills in missing answers, rubrics and explanations, and flags what it inferred. You review each draft before it's saved.
 3. **Edit the JSON** directly:
 
 ```jsonc
@@ -67,7 +67,7 @@ There are three ways to add questions, all of which land in `bank/verified/`:
 
 ### AI questions
 
-**Generate** asks Claude for new questions in an area. You can set a topic, difficulty, types and count. Your verified questions in that area are sent as style and difficulty examples, and existing titles are sent so it avoids duplicates. The more of your own questions you add, the better calibrated the output gets.
+**Generate** asks the AI model for new questions in an area. You can set a topic, difficulty, types and count. Your verified questions in that area are sent as style and difficulty examples, and existing titles are sent so it avoids duplicates. The more of your own questions you add, the better calibrated the output gets.
 
 Generated questions go to `bank/ai/` and are playable right away, marked **AI · unreviewed**. You can verify or reject them from **Review**, or straight from the answer screen while you practice. Turn on **Verified questions only** on Home to practice only your bank.
 
@@ -84,6 +84,17 @@ Keyboard: `1`–`4` pick a choice, `Enter` checks or continues.
 
 ## Stack
 
-Vite + React + TypeScript frontend, Express API (`server/`), shared zod schema and SRS logic (`shared/`). AI calls use the Anthropic TypeScript SDK with structured outputs. The default model is `claude-opus-5-5`; override it with `HOTFIRE_MODEL` in `.env`.
+Vite + React + TypeScript frontend, Express API (`server/`), shared zod schema and SRS logic (`shared/`).
+
+## AI provider
+
+The AI features run on **Google Gemini 4 Neon** by default. Switch providers in `.env`:
+
+| `AI_PROVIDER` | Key | Model var (default) |
+|---|---|---|
+| `google` (default) | `GEMINI_API_KEY` | `GEMINI_MODEL` (`gemini-4-neon`; `gemini-4-hydrogen` is lighter and cheaper) |
+| `anthropic` | `ANTHROPIC_API_KEY` | `CLAUDE_MODEL` (`claude-opus-5-5`) |
+
+Both providers return JSON against the same schema (`server/llm.ts`), and their output is validated before anything is written to the bank. Every prompt tells the model to keep explanations, model answers and feedback very concise (the `CONCISE` block in `server/ai.ts`).
 
 `npm run start` builds the app and serves everything from :8787 if you'd rather run a single process.

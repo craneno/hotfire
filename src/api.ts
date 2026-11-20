@@ -9,6 +9,8 @@ import type {
   Settings,
 } from "../shared/schema.ts";
 
+export type AiStatus = { provider: "google" | "anthropic"; model: string; configured: boolean };
+
 export type BankError = { file: string; index: number; message: string };
 
 async function req<T>(method: string, url: string, body?: unknown): Promise<T> {
@@ -35,7 +37,7 @@ export const api = {
   settings: (s: Partial<Settings>) => req<Progress>("PUT", "/settings", s),
   resetProgress: () => req<Progress>("POST", "/progress/reset"),
 
-  aiStatus: () => req<{ configured: boolean; model: string }>("GET", "/ai/status"),
+  aiStatus: () => req<AiStatus>("GET", "/ai/status"),
   generate: (r: GenerateRequest) => req<{ added: Question[]; rejected: string[] }>("POST", "/ai/generate", r),
   grade: (questionId: string, answer: string) =>
     req<GradeResult & { followUp: string }>("POST", "/ai/grade", { questionId, answer }),

@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { Progress, Question } from "../shared/schema.ts";
 import { liveStreak } from "../shared/srs.ts";
-import { api, type BankError } from "./api.ts";
+import { api, type AiStatus, type BankError } from "./api.ts";
 import { AddPage } from "./pages/Add.tsx";
 import { GeneratePage } from "./pages/Generate.tsx";
 import { HomePage } from "./pages/Home.tsx";
@@ -14,7 +14,7 @@ type Store = {
   bank: Question[];
   bankErrors: BankError[];
   progress: Progress;
-  ai: { configured: boolean; model: string };
+  ai: AiStatus;
   setProgress: (p: Progress) => void;
   reloadBank: () => Promise<void>;
   /** Questions eligible for practice under current settings. */
@@ -55,7 +55,7 @@ export function App() {
   const [bank, setBank] = useState<Question[] | null>(null);
   const [bankErrors, setBankErrors] = useState<BankError[]>([]);
   const [progress, setProgress] = useState<Progress | null>(null);
-  const [ai, setAi] = useState({ configured: false, model: "" });
+  const [ai, setAi] = useState<AiStatus>({ provider: "google", model: "", configured: false });
   const [fatal, setFatal] = useState<string | null>(null);
 
   const reloadBank = useCallback(async () => {
@@ -109,6 +109,9 @@ export function App() {
         <div className="stats">
           <span title="Day streak" className={streak ? "streak on" : "streak"}>
             🔥 {streak}
+          </span>
+          <span title={ai.configured ? `AI: ${ai.provider}` : "AI off: no API key in .env"} className="muted small model">
+            {ai.configured ? ai.model : "AI off"}
           </span>
           <span title="Total XP" className="xp">
             ⚡ {progress.xp}

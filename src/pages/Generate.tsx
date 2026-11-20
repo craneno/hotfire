@@ -3,6 +3,7 @@ import { AREAS, type AreaId, type Difficulty, type Question, type QuestionType }
 import { api } from "../api.ts";
 import { useStore } from "../App.tsx";
 import { DiffBadge, TYPE_LABEL } from "../components/Badges.tsx";
+import { KeyHint } from "../components/KeyHint.tsx";
 
 export function GeneratePage() {
   const { ai, bank, reloadBank, progress } = useStore();
@@ -36,12 +37,12 @@ export function GeneratePage() {
     <div className="generate">
       <h1>Generate questions</h1>
       <p className="muted">
-        Claude writes new questions into <code>bank/ai/</code>, using your verified questions in that area as the style and
+        {ai.model || "The AI model"} writes new questions into <code>bank/ai/</code>, using your verified questions in that area as the style and
         difficulty reference. They're playable right away, tagged “AI · unreviewed”, until you verify them in Review.
       </p>
       {!ai.configured && (
         <div className="banner warn">
-          No Anthropic credentials found. Add <code>ANTHROPIC_API_KEY</code> to <code>.env</code> and restart{" "}
+          No API key found for {ai.provider}. Add <KeyHint /> to <code>.env</code> and restart{" "}
           <code>npm run dev</code>.
         </div>
       )}
