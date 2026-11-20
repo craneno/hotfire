@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { isDone } from "../../shared/session.ts";
-import { api } from "../api.ts";
+import { api, readOnly } from "../api.ts";
 import { navigate, useStore } from "../App.tsx";
 import { QuestionCard } from "../components/QuestionCard.tsx";
 import { QuestionEditor } from "../components/QuestionEditor.tsx";
@@ -35,9 +35,11 @@ export function SolvePage({ id }: { id: string }) {
             Done {p.attempts}× · last {new Date(p.lastSeen).toLocaleDateString()}
           </span>
         )}
-        <button className="btn small ghost" onClick={() => setEditing((e) => !e)}>
-          {editing ? "Close editor" : "Edit"}
-        </button>
+        {!readOnly && (
+          <button className="btn small ghost" onClick={() => setEditing((e) => !e)}>
+            {editing ? "Close editor" : "Edit"}
+          </button>
+        )}
       </div>
       {editing ? (
         <QuestionEditor

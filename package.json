@@ -9,7 +9,9 @@
     "build": "tsc -p tsconfig.json --noEmit && vite build",
     "start": "npm run build && NODE_ENV=production tsx server/index.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "bank:check": "tsx scripts/check-bank.ts"
+    "bank:check": "tsx scripts/check-bank.ts",
+    "build:static": "tsc -p tsconfig.json --noEmit && VITE_STATIC=true vite build --base=./ && tsx scripts/export-bank.ts dist/bank.json",
+    "preview:static": "npm run build:static && vite preview"
   },
   "license": "UNLICENSED",
   "dependencies": {

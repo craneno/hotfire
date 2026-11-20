@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { Progress, Question } from "../shared/schema.ts";
 import { liveStreak } from "../shared/session.ts";
-import { api, type BankError } from "./api.ts";
+import { api, readOnly, type BankError } from "./api.ts";
 import { AddPage } from "./pages/Add.tsx";
 import { HomePage } from "./pages/Home.tsx";
 import { PracticePage } from "./pages/Practice.tsx";
@@ -45,7 +45,7 @@ const NAV = [
   { to: "/problems", label: "Problems" },
   { to: "/add", label: "Add" },
   { to: "/review", label: "Review" },
-];
+].filter((n) => !readOnly || (n.to !== "/add" && n.to !== "/review"));
 
 export function App() {
   const route = useHashRoute();
@@ -83,8 +83,8 @@ export function App() {
   if (route.startsWith("/q/")) page = <SolvePage key={route} id={decodeURIComponent(route.slice(3))} />;
   else if (base === "/practice") page = <PracticePage />;
   else if (base === "/problems") page = <ProblemsPage />;
-  else if (base === "/add") page = <AddPage />;
-  else if (base === "/review") page = <ReviewPage />;
+  else if (base === "/add" && !readOnly) page = <AddPage />;
+  else if (base === "/review" && !readOnly) page = <ReviewPage />;
   else page = <HomePage />;
 
   return (

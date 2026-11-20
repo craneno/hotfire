@@ -1,6 +1,6 @@
 import { AREAS, type AreaId, type Settings } from "../../shared/schema.ts";
 import { buildSession, dayKey, isDone, liveStreak } from "../../shared/session.ts";
-import { api } from "../api.ts";
+import { api, readOnly } from "../api.ts";
 import { navigate, useStore } from "../App.tsx";
 
 export function HomePage() {
@@ -117,6 +117,7 @@ export function HomePage() {
           Verified questions only
         </label>
         <span className="spacer" />
+        {readOnly && <span className="muted small">Progress is saved in this browser.</span>}
         <button
           className="btn small ghost"
           onClick={async () => {

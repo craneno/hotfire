@@ -93,3 +93,12 @@ export function buildSession(pool: Question[], p: Progress, length: number): Que
 
   return [...interleaved, ...stale].slice(0, length);
 }
+
+/** Fill defaults and tolerate progress written by older versions. */
+export function normalizeProgress(raw: unknown): Progress {
+  const p = (raw ?? {}) as Partial<Progress>;
+  const questions: Progress["questions"] = {};
+  for (const [id, q] of Object.entries(p.questions ?? {}))
+    questions[id] = { attempts: q.attempts ?? 0, lastSeen: q.lastSeen ?? new Date(0).toISOString(), answers: q.answers ?? [] };
+  return { ...emptyProgress(), ...p, questions, settings: { ...DEFAULT_SETTINGS, ...p.settings } };
+}
